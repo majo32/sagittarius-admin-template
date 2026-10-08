@@ -1,211 +1,211 @@
-# Pokyny pre AI agentov – Sagittarius Admin Template
+# Instructions for AI agents – Sagittarius Admin Template
 
-Tento súbor je záväzný kontext pre každého AI agenta (Claude Code, Copilot, Cursor…), ktorý upravuje tento repozitár. Pred zmenou si ho prečítaj celý.
+This file is binding context for every AI agent (Claude Code, Copilot, Cursor…) that modifies this repository. Read it in full before making any change.
 
-## 1. Čo je v repozitári
+## 1. What is in the repository
 
-Angular 20 workspace (`angular.json`) s dvoma projektmi:
+An Angular 20 workspace (`angular.json`) with two projects:
 
-| Projekt | Typ | Účel |
+| Project | Type | Purpose |
 |---|---|---|
-| `projects/sagittarius-admin-template` | knižnica (ng-packagr) | Layout administračnej aplikácie: sidebar, header, obsah, drawer, footer + design tokeny a pomocné CSS triedy. Publikuje sa do npmjs.com ako `sagittarius-admin-template`. |
-| `projects/sagittarius-admin-template-example` | aplikácia | Vzorová admin aplikácia, ktorá knižnicu používa. Slúži ako živá dokumentácia a na manuálne testovanie. |
+| `projects/sagittarius-admin-template` | library (ng-packagr) | Admin application layout: sidebar, header, content, drawer, footer + design tokens and helper CSS classes. Published to npmjs.com as `sagittarius-admin-template`. |
+| `projects/sagittarius-admin-template-example` | application | Sample admin application that uses the library. Serves as living documentation and for manual testing. |
 
-Závislosti: Angular 20, Angular Material 20 (M3), CDK, Router. Žiadne ďalšie UI knižnice nepridávaj bez dohody.
+Dependencies: Angular 20, Angular Material 20 (M3), CDK, Router. Do not add any other UI libraries without agreement.
 
-## 2. Príkazy
-
-```bash
-npm ci                                            # inštalácia
-npx ng build sagittarius-admin-template           # build knižnice -> dist/sagittarius-admin-template
-npm run watch                                     # build knižnice v watch režime (pri vývoji)
-npx ng serve sagittarius-admin-template-example       # dev aplikácia na http://localhost:4200
-npx ng build sagittarius-admin-template-example       # produkčný build dev aplikácie (kontrola typov šablón)
-npm run test:ci                                   # všetky testy jednorazovo (potrebuje CHROME_BIN)
-```
-
-Testy (Karma potrebuje Chrome; ak nie je nainštalovaný, použi napr. Playwright chromium-headless-shell cez `CHROME_BIN`):
+## 2. Commands
 
 ```bash
-CHROME_BIN=/cesta/k/chrome npx ng test sagittarius-admin-template --watch=false --browsers=ChromeHeadless
-CHROME_BIN=/cesta/k/chrome npx ng test sagittarius-admin-template-example --watch=false --browsers=ChromeHeadless
+npm ci                                            # install
+npx ng build sagittarius-admin-template           # build the library -> dist/sagittarius-admin-template
+npm run watch                                     # build the library in watch mode (during development)
+npx ng serve sagittarius-admin-template-example       # dev application at http://localhost:4200
+npx ng build sagittarius-admin-template-example       # production build of the dev application (template type check)
+npm run test:ci                                   # all tests, single run (requires CHROME_BIN)
 ```
 
-### Dôležité pasce
+Tests (Karma needs Chrome; if it is not installed, use e.g. Playwright chromium-headless-shell via `CHROME_BIN`):
 
-- **Dev aplikácia importuje knižnicu z `dist/`**, nie zo zdrojákov (`tsconfig.json` → `paths.sagittarius-admin-template = ./dist/sagittarius-admin-template`). Po každej zmene TS/HTML/SCSS knižnice ju treba prebuildovať (alebo mať spustený `npm run watch`).
-- **Vite cache dev servera** si drží predbalenú knižnicu. Ak zmena knižnice nie je vidieť ani po rebuilde, zastav `ng serve`, zmaž `.angular/cache/*/sagittarius-admin-template-example/vite` a spusti znova.
-- Globálny stylesheet knižnice (`projects/sagittarius-admin-template/styles/sagittarius-admin.scss`) dev aplikácia načítava **priamo zo zdrojákov** (viď `angular.json` → `styles`), takže jeho zmeny sa prejavia hneď.
-- Knižnica sa importuje ako `'sagittarius-admin-template'` – v dev app (cez `paths` na `dist/`) aj v cudzích aplikáciách (z npm).
-- `.npmrc` s tokenom nikdy necommituj (je v `.gitignore`); publikovanie robí GitHub Actions cez npm Trusted Publishing. Viď `PUBLIKOVANIE.md`.
+```bash
+CHROME_BIN=/path/to/chrome npx ng test sagittarius-admin-template --watch=false --browsers=ChromeHeadless
+CHROME_BIN=/path/to/chrome npx ng test sagittarius-admin-template-example --watch=false --browsers=ChromeHeadless
+```
 
-## 3. Architektúra knižnice
+### Important pitfalls
+
+- **The dev application imports the library from `dist/`**, not from sources (`tsconfig.json` → `paths.sagittarius-admin-template = ./dist/sagittarius-admin-template`). After every change to library TS/HTML/SCSS, the library must be rebuilt (or have `npm run watch` running).
+- **The dev server's Vite cache** holds the pre-bundled library. If a library change is not visible even after a rebuild, stop `ng serve`, delete `.angular/cache/*/sagittarius-admin-template-example/vite` and start again.
+- The library's global stylesheet (`projects/sagittarius-admin-template/styles/sagittarius-admin.scss`) is loaded by the dev application **directly from sources** (see `angular.json` → `styles`), so changes to it take effect immediately.
+- The library is imported as `'sagittarius-admin-template'` – in the dev app (via `paths` to `dist/`) as well as in third-party applications (from npm).
+- Never commit `.npmrc` with a token (it is in `.gitignore`); publishing is done by GitHub Actions via npm Trusted Publishing. See `PUBLIKOVANIE.md`.
+
+## 3. Library architecture
 
 ```
 src/lib/sagittarius-admin/
-  sagittarius-admin.ts|html|scss     <lib-sagittarius-admin> – celý layout
+  sagittarius-admin.ts|html|scss     <lib-sagittarius-admin> – the whole layout
   sagittarius-admin.models.ts        SgMenuItem, SgUser, SgUserMenuItem, DrawerOptions, DrawerData
   sagittarius-admin.labels.ts        SgAdminLabels, SG_ADMIN_LABELS (token), SG_ADMIN_LABELS_EN/_SK, provideSgAdminLabels()
-  drawer-service.ts                  DrawerService – verejné API na otváranie drawerov
-  drawer-ref.ts                      DrawerRef – injektovateľný do komponentu v draweri
-  drawer-component/                  host drawera, drží zásobník vrstiev (interné)
-    drawer-content/                  obal jednej vrstvy: hlavička (späť/zavrieť, titulok) + telo (interné)
-src/public-api.ts                      jediný vstupný bod – čo tu nie je exportované, nie je verejné
-styles/sagittarius-admin.scss          design tokeny + pomocné triedy (kopíruje sa do balíčka ako asset)
+  drawer-service.ts                  DrawerService – public API for opening drawers
+  drawer-ref.ts                      DrawerRef – injectable into a component inside the drawer
+  drawer-component/                  drawer host, holds the layer stack (internal)
+    drawer-content/                  wrapper of a single layer: header (back/close, title) + body (internal)
+src/public-api.ts                      the only entry point – anything not exported here is not public
+styles/sagittarius-admin.scss          design tokens + helper classes (copied into the package as an asset)
 ```
 
 ### `<lib-sagittarius-admin>` – API
 
-Vstupy (signal `input()`): `appTitle`, `appShortTitle`, `logoUrl`, `homeRoute`, `menuItems: SgMenuItem[]`, `user: SgUser | null`, `userMenuItems: SgUserMenuItem[]`, `persistSidebarState` (localStorage kľúč `sg-admin-sidebar-collapsed`).
-Výstupy: `userMenuItemClick`.
+Inputs (signal `input()`): `appTitle`, `appShortTitle`, `logoUrl`, `homeRoute`, `menuItems: SgMenuItem[]`, `user: SgUser | null`, `userMenuItems: SgUserMenuItem[]`, `persistSidebarState` (localStorage key `sg-admin-sidebar-collapsed`).
+Outputs: `userMenuItemClick`.
 
-Content projection sloty (atribút na projektovanom elemente):
+Content projection slots (attribute on the projected element):
 
-| Slot | Kde sa zobrazí |
+| Slot | Where it is rendered |
 |---|---|
-| *(bez atribútu)* | hlavný obsah – typicky `<router-outlet />` |
-| `sg-admin-header-left` | ľavá časť hlavičky (breadcrumbs, názov) |
-| `sg-admin-header-middle`, `sg-admin-header` | stred hlavičky |
-| `sg-admin-header-actions` | vpravo v hlavičke pred avatarom (ikonové tlačidlá) |
-| `sg-admin-sidebar-bottom` | spodok sidebaru pod menu |
-| `sg-admin-footer` | footer (má predvolený obsah = `appTitle`) |
+| *(no attribute)* | main content – typically `<router-outlet />` |
+| `sg-admin-header-left` | left part of the header (breadcrumbs, title) |
+| `sg-admin-header-middle`, `sg-admin-header` | middle of the header |
+| `sg-admin-header-actions` | right side of the header before the avatar (icon buttons) |
+| `sg-admin-sidebar-bottom` | bottom of the sidebar below the menu |
+| `sg-admin-footer` | footer (default content = `appTitle`) |
 
 ### Drawer
 
-- `DrawerService.open(Component, data?, { title, fullPageUrl, fullPageIcon, fullPageLabel })` vloží komponent ako novú vrstvu nad obsah. Vrstvy sa dajú vnárať (detail → úprava); vnorená vrstva má šípku späť, prvá krížik.
-- `data` sú hodnoty vstupov komponentu – pre signal `input()` sa volá `setInput`, ostatné sa priradia na inštanciu. Typ `DrawerData<T>` rozbaľuje signal inputy.
-- Komponent v draweri získa `inject(DrawerRef)` → `close()`, `setTitle()`, `title` signal, `setFullPageUrl()`, `fullPageUrl` signal.
-- `fullPageUrl` (string = `navigateByUrl`, pole = príkazy routera): v pravom rohu hlavičky vrstvy sa zobrazí ikona (`fullPageIcon`, default `open_in_full`; tooltip/aria `fullPageLabel`, default `SgAdminLabels.drawerFullPage`), ktorá je `routerLink` s `replaceUrl` – zavrie všetky vrstvy a nahradí záznam histórie drawera cieľovou stránkou. Komponent použiteľný aj mimo drawera injektuje `DrawerRef` s `{ optional: true }`.
-- Každé otvorenie pridá záznam do histórie (`Location.go` s rovnakou URL). Tlačidlo Späť v prehliadači / na mobile zavrie vrchnú vrstvu (`PlatformLocation.onPopState`). `DrawerRef.close()` robí `history.back()`.
-- Imperatívna navigácia routera (klik v menu) zavrie všetky vrstvy.
-- Spätná kompatibilita: ak sú zadané `data` a komponent nemá vlastnú `close`, dostane `close()` property.
+- `DrawerService.open(Component, data?, { title, fullPageUrl, fullPageIcon, fullPageLabel })` inserts the component as a new layer above the content. Layers can be nested (detail → edit); a nested layer has a back arrow, the first one a close (×) button.
+- `data` are the component's input values – for signal `input()` `setInput` is called, others are assigned to the instance. The `DrawerData<T>` type unwraps signal inputs.
+- A component in the drawer gets `inject(DrawerRef)` → `close()`, `setTitle()`, `title` signal, `setFullPageUrl()`, `fullPageUrl` signal.
+- `fullPageUrl` (string = `navigateByUrl`, array = router commands): an icon is shown in the right corner of the layer header (`fullPageIcon`, default `open_in_full`; tooltip/aria `fullPageLabel`, default `SgAdminLabels.drawerFullPage`), which is a `routerLink` with `replaceUrl` – it closes all layers and replaces the drawer's history entry with the target page. A component usable outside the drawer as well injects `DrawerRef` with `{ optional: true }`.
+- Each open adds a history entry (`Location.go` with the same URL). The browser / mobile Back button closes the top layer (`PlatformLocation.onPopState`). `DrawerRef.close()` calls `history.back()`.
+- Imperative router navigation (click in the menu) closes all layers.
+- Backward compatibility: if `data` is provided and the component has no `close` of its own, it receives a `close()` property.
 
-### Texty (i18n)
+### Texts (i18n)
 
-- Aria-labely a tooltipy layoutu a drawera sú v `SgAdminLabels`; token `SG_ADMIN_LABELS` má default `SG_ADMIN_LABELS_EN`.
-- Aplikácia ich nastaví `provideSgAdminLabels(SG_ADMIN_LABELS_SK)` alebo len časť kľúčov `provideSgAdminLabels({ drawerClose: '…' })` – chýbajúce sa doplnia z angličtiny.
+- Aria labels and tooltips of the layout and drawer live in `SgAdminLabels`; the `SG_ADMIN_LABELS` token defaults to `SG_ADMIN_LABELS_EN`.
+- An application sets them with `provideSgAdminLabels(SG_ADMIN_LABELS_SK)` or only some keys `provideSgAdminLabels({ drawerClose: '…' })` – missing ones are filled in from English.
 
-## 4. Layout – NEMENIŤ bez výslovného pokynu
+## 4. Layout – DO NOT CHANGE without explicit instruction
 
-Layout je kontrakt s aplikáciami, ktoré knižnicu používajú. Dizajn (farby, tiene, zaoblenia, typografia) sa meniť môže, **štruktúra a správanie nie**:
+The layout is a contract with the applications that use the library. The design (colors, shadows, radii, typography) may change, **the structure and behavior may not**:
 
 ```
 .sg-admin-theme (flex row, 100vw × 100dvh)
 ├── aside.sg-admin-theme-sidebar          [.collapsed | .expanded | .open]
 │   └── .sg-admin-theme-sidebar-wrapper   [.hover | .no-hover]
-│       ├── .sg-admin-theme-sidebar-header  (logo + tlačidlo zbalenia)
-│       └── .sg-admin-theme-sidebar-body    (profil, nav, sidebar-bottom slot)
+│       ├── .sg-admin-theme-sidebar-header  (logo + collapse button)
+│       └── .sg-admin-theme-sidebar-body    (profile, nav, sidebar-bottom slot)
 └── .sg-admin-theme-body (flex column)
     ├── header.sg-admin-theme-header        (left / middle / right box)
     ├── main.sg-admin-theme-main
-    │   ├── .sg-admin-theme-drawer          [.closed]  – absolútne cez celý main
+    │   ├── .sg-admin-theme-drawer          [.closed]  – absolutely positioned over the whole main
     │   └── .sg-admin-theme-content         – ng-content, z-index: 0 (stacking context)
     └── footer.sg-admin-theme-footer
 ```
 
-Pravidlá správania:
-- Breakpoint **800 px** (`MOBILE_BREAKPOINT` v TS a `@media (max-width: 800px)` v SCSS – meniť vždy oboje).
-- Desktop: sidebar 260 px; zbalený 64 px, pri hoveri sa rozbalí **ako overlay** (nepresúva obsah). Po kliknutí na prepínač sa hover 300 ms ignoruje.
-- Mobil: sidebar je fixed overlay cez celú šírku (otvára ho hamburger v hlavičke, zatvára krížik alebo klik na položku menu); stránka scrolluje celá, header je sticky.
-- Drawer na desktope prekrýva celú plochu `main` (header a sidebar ostávajú viditeľné); na mobile je fixed cez celú obrazovku.
-- Názvy tried `sg-admin-theme-*` nepremenovávaj – aplikácie na ne môžu mať naviazané štýly.
+Behavior rules:
+- Breakpoint **800 px** (`MOBILE_BREAKPOINT` in TS and `@media (max-width: 800px)` in SCSS – always change both).
+- Desktop: sidebar 260 px; collapsed 64 px, on hover it expands **as an overlay** (does not shift the content). After clicking the toggle, hover is ignored for 300 ms.
+- Mobile: the sidebar is a fixed full-width overlay (opened by the hamburger in the header, closed by the × button or a click on a menu item); the whole page scrolls, the header is sticky.
+- On desktop the drawer covers the entire `main` area (header and sidebar remain visible); on mobile it is fixed over the whole screen.
+- Do not rename `sg-admin-theme-*` class names – applications may have styles bound to them.
 
-## 5. Dizajn systém
+## 5. Design system
 
-### Tokeny
-Všetky farby a rozmery sú CSS premenné `--sg-*` definované v `:root` v `styles/sagittarius-admin.scss`. **V SCSS komponentov knižnice nikdy nepíš natvrdo farbu** – vždy `var(--sg-…)`. Nová farba = nový token v `:root`.
+### Tokens
+All colors and dimensions are `--sg-*` CSS variables defined in `:root` in `styles/sagittarius-admin.scss`. **Never hard-code a color in library component SCSS** – always use `var(--sg-…)`. New color = new token in `:root`.
 
-- Svetlá/tmavá téma cez `light-dark(svetlá, tmavá)`; prepína sa `color-scheme` na `<html>` (v dev app trieda `.dark-theme`). Každý nový farebný token musí mať obe varianty.
-- Primárna farba sa preberá z Angular Material témy: `--sg-primary: var(--mat-sys-primary)`. Nemeň paletu natvrdo v knižnici – aplikácia si ju nastaví cez `mat.theme()`.
-- Sidebar je tmavý v oboch témach (`--sg-sidebar-*`, bez `light-dark`) a má `color-scheme: dark`, aby Material prvky a scrollbary v ňom boli tmavé.
-- Skupiny tokenov: rozmery (`--sg-header-height`, `--sg-sidebar-width`, `--sg-sidebar-collapsed-width`, `--sg-footer-height`, `--sg-drawer-header-height`, `--sg-page-padding`, `--sg-gap`), plochy (`--sg-bg`, `--sg-surface`, `--sg-surface-2`, `--sg-border`, `--sg-hover`), text (`--sg-text`, `--sg-text-muted`), stavy (`--sg-success|warning|danger|info|neutral` + `-soft`), zaoblenia a tiene (`--sg-radius`, `--sg-radius-sm`, `--sg-shadow-*`).
-- Štýly pre prvky mimo hostiteľa komponentu (Material overlay – napr. user menu `.sg-admin-user-menu`) patria do globálneho stylesheetu, nie do SCSS komponentu (emulated encapsulation by ich nezasiahla).
+- Light/dark theme via `light-dark(light, dark)`; switched by `color-scheme` on `<html>` (in the dev app the `.dark-theme` class). Every new color token must have both variants.
+- The primary color is taken from the Angular Material theme: `--sg-primary: var(--mat-sys-primary)`. Do not hard-code the palette in the library – the application sets it via `mat.theme()`.
+- The sidebar is dark in both themes (`--sg-sidebar-*`, without `light-dark`) and has `color-scheme: dark` so that Material elements and scrollbars inside it are dark.
+- Token groups: dimensions (`--sg-header-height`, `--sg-sidebar-width`, `--sg-sidebar-collapsed-width`, `--sg-footer-height`, `--sg-drawer-header-height`, `--sg-page-padding`, `--sg-gap`), surfaces (`--sg-bg`, `--sg-surface`, `--sg-surface-2`, `--sg-border`, `--sg-hover`), text (`--sg-text`, `--sg-text-muted`), states (`--sg-success|warning|danger|info|neutral` + `-soft`), radii and shadows (`--sg-radius`, `--sg-radius-sm`, `--sg-shadow-*`).
+- Styles for elements outside the component host (Material overlay – e.g. user menu `.sg-admin-user-menu`) belong in the global stylesheet, not in component SCSS (emulated encapsulation would not reach them).
 
-### Pomocné triedy pre stránky aplikácií
-Aplikácie majú stavať stránky z týchto tried (ukážky v dev app, `src/app/pages/*`):
+### Helper classes for application pages
+Applications should build pages from these classes (examples in the dev app, `src/app/pages/*`):
 
-| Trieda | Použitie |
+| Class | Usage |
 |---|---|
-| `.sg-page` (+`.sg-page-narrow`) | koreň stránky – padding, max-šírka, vertikálny gap |
-| `.sg-page-header` › `.sg-page-title`, `.sg-page-subtitle`, `.sg-page-actions` | hlavička stránky |
-| `.sg-breadcrumbs` | omrvinková navigácia (oddeľovače dopĺňa CSS) |
-| `.sg-card` › `.sg-card-header`, `.sg-card-title`, `.sg-card-subtitle`, `.sg-card-body`, `.sg-card-body-flush`, `.sg-card-footer` | karta; `-flush` pre tabuľky bez paddingu |
-| `.sg-grid` (+`.sg-grid-2/3/4`, `.sg-span-2`) | responzívna mriežka, číslo = max. počet stĺpcov |
-| `.sg-stat` › `.sg-stat-head`, `-label`, `-icon`, `-value`, `-delta` (`.up`/`.down`) | KPI dlaždica (kombinuj s `.sg-card`) |
-| `.sg-badge` + `.sg-badge-success/warning/danger/info` (`.sg-badge-plain` bez bodky) | stav |
-| `.sg-avatar` (+`.sg-avatar-lg`) | kruh s iniciálami |
-| `.sg-toolbar`, `.sg-toolbar-spacer` | riadok filtrov nad tabuľkou (kompaktné form fieldy) |
-| `.sg-table-clickable` | hover + pointer na riadkoch `mat-table` |
-| `.sg-form-grid` (+`.sg-col-full`), `.sg-form-section-title` | formuláre |
-| `.sg-kv` (`dl > dt/dd`) | detail kľúč–hodnota |
-| `.sg-empty-state` | prázdny stav / 404 (ikona, `h3`, `p`, akcia) |
-| `.sg-drawer-page` | koreň obsahu komponentu v draweri |
-| `.sg-muted`, `.sg-text-right`, `.sg-nowrap` | utility |
+| `.sg-page` (+`.sg-page-narrow`) | page root – padding, max width, vertical gap |
+| `.sg-page-header` › `.sg-page-title`, `.sg-page-subtitle`, `.sg-page-actions` | page header |
+| `.sg-breadcrumbs` | breadcrumb navigation (separators added by CSS) |
+| `.sg-card` › `.sg-card-header`, `.sg-card-title`, `.sg-card-subtitle`, `.sg-card-body`, `.sg-card-body-flush`, `.sg-card-footer` | card; `-flush` for tables without padding |
+| `.sg-grid` (+`.sg-grid-2/3/4`, `.sg-span-2`) | responsive grid, number = max. column count |
+| `.sg-stat` › `.sg-stat-head`, `-label`, `-icon`, `-value`, `-delta` (`.up`/`.down`) | KPI tile (combine with `.sg-card`) |
+| `.sg-badge` + `.sg-badge-success/warning/danger/info` (`.sg-badge-plain` without dot) | status |
+| `.sg-avatar` (+`.sg-avatar-lg`) | circle with initials |
+| `.sg-toolbar`, `.sg-toolbar-spacer` | filter row above a table (compact form fields) |
+| `.sg-table-clickable` | hover + pointer on `mat-table` rows |
+| `.sg-form-grid` (+`.sg-col-full`), `.sg-form-section-title` | forms |
+| `.sg-kv` (`dl > dt/dd`) | key–value detail |
+| `.sg-empty-state` | empty state / 404 (icon, `h3`, `p`, action) |
+| `.sg-drawer-page` | root of a component's content inside the drawer |
+| `.sg-muted`, `.sg-text-right`, `.sg-nowrap` | utilities |
 
-Nová opakujúca sa UI vzorka → pridaj triedu do globálneho stylesheetu (prefix `sg-`), použi ju v dev app a doplň do tejto tabuľky.
+New recurring UI pattern → add a class to the global stylesheet (prefix `sg-`), use it in the dev app and add it to this table.
 
-### Vizuálne pravidlá
-- Plochy: pozadie `--sg-bg`, karty `--sg-surface` s 1px `--sg-border` a jemným tieňom; žiadne hrubé tiene ani gradienty na plochách (gradient len v avatare sidebaru).
-- Rozostupy v násobkoch 4 px; štandard 16 px (`--sg-gap`), padding stránky 24 px (mobil 16 px).
-- Typografia: Roboto (z Material témy); nadpis stránky 24/600, nadpis karty 15/600, popisky 12–13 `--sg-text-muted`.
-- Stavové farby len pre stavy (úspech/varovanie/chyba/info), vždy s textom – nie iba farbou.
-- Animácie krátke (150–300 ms) a rešpektujú `prefers-reduced-motion`.
-- Každú vizuálnu zmenu over v **svetlej aj tmavej** téme a na **desktope (1440 px) aj mobile (390 px)**.
+### Visual rules
+- Surfaces: background `--sg-bg`, cards `--sg-surface` with a 1px `--sg-border` and a subtle shadow; no heavy shadows or gradients on surfaces (gradient only in the sidebar avatar).
+- Spacing in multiples of 4 px; standard 16 px (`--sg-gap`), page padding 24 px (mobile 16 px).
+- Typography: Roboto (from the Material theme); page title 24/600, card title 15/600, captions 12–13 `--sg-text-muted`.
+- Status colors only for states (success/warning/error/info), always with text – never color alone.
+- Animations short (150–300 ms) and respecting `prefers-reduced-motion`.
+- Verify every visual change in **light and dark** themes and on **desktop (1440 px) and mobile (390 px)**.
 
-## 6. Konvencie kódu
+## 6. Code conventions
 
-- Standalone komponenty, `imports` v dekorátore. Žiadne NgModules.
-- Nový kód: signal `input()` / `output()` / `computed()` / `signal()`, `inject()`, nový control flow (`@if`, `@for` s `track`). Nepoužívaj `NgIf/NgFor/NgClass`.
-- Šablóny sú typovo striktné (`strictTemplates`) – dev build musí prejsť bez chýb.
-- Prístup k `localStorage` vždy v `try/catch`.
-- Žiadne `console.log` v knižnici.
-- Selektory knižnice majú prefix `lib-`, CSS triedy `sg-`, verejné typy `Sg*` (výnimka: existujúce `DrawerService`, `DrawerRef`).
-- Komentáre sú po slovensky; identifikátory po anglicky. Texty UI v dev app sú **anglicky** (verejné demo).
-- Texty zabudované v knižnici (aria-label, tooltipy) nepíš natvrdo – patria do `SgAdminLabels` (`sagittarius-admin.labels.ts`): nový kľúč doplň do rozhrania aj do `SG_ADMIN_LABELS_EN` a `SG_ADMIN_LABELS_SK`, v komponente `inject(SG_ADMIN_LABELS)`. Aplikácia ich mení cez `provideSgAdminLabels()`.
-- Formátovanie: `.editorconfig` (2 medzery, jednoduché úvodzovky v TS).
+- Standalone components, `imports` in the decorator. No NgModules.
+- New code: signal `input()` / `output()` / `computed()` / `signal()`, `inject()`, new control flow (`@if`, `@for` with `track`). Do not use `NgIf/NgFor/NgClass`.
+- Templates are strictly typed (`strictTemplates`) – the dev build must pass without errors.
+- Always access `localStorage` inside `try/catch`.
+- No `console.log` in the library.
+- Library selectors have the `lib-` prefix, CSS classes `sg-`, public types `Sg*` (exception: existing `DrawerService`, `DrawerRef`).
+- Comments are in Slovak; identifiers in English. UI texts in the dev app are in **English** (public demo).
+- Do not hard-code texts built into the library (aria-label, tooltips) – they belong in `SgAdminLabels` (`sagittarius-admin.labels.ts`): add a new key to the interface as well as to `SG_ADMIN_LABELS_EN` and `SG_ADMIN_LABELS_SK`, and use `inject(SG_ADMIN_LABELS)` in the component. Applications change them via `provideSgAdminLabels()`.
+- Formatting: `.editorconfig` (2 spaces, single quotes in TS).
 
-## 7. Verejné API a verziovanie
+## 7. Public API and versioning
 
-- Všetko verejné musí byť exportované v `src/public-api.ts`. Interné komponenty (`DrawerComponent`, `DrawerContent`) neexportuj.
-- Knižnicu používajú iné projekty – **nerob breaking changes** (premenovanie vstupov, slotov, tried `sg-admin-theme-*`, tokenov) bez dohody. Ak je nevyhnutná, ponechaj starý názov ako deprecated alias.
-- Nová závislosť na Angular balíčku → pridaj do `peerDependencies` v `projects/sagittarius-admin-template/package.json`.
-- Pred publikovaním zvýš verziu v `projects/sagittarius-admin-template/package.json` (semver: oprava = patch, nová funkcia = minor, breaking = major). Publikuje len človek – vytvorením GitHub Release `vX.Y.Z` (workflow `.github/workflows/publish.yml`); doplň aj `CHANGELOG.md`.
+- Everything public must be exported in `src/public-api.ts`. Do not export internal components (`DrawerComponent`, `DrawerContent`).
+- The library is used by other projects – **do not make breaking changes** (renaming inputs, slots, `sg-admin-theme-*` classes, tokens) without agreement. If one is unavoidable, keep the old name as a deprecated alias.
+- New dependency on an Angular package → add it to `peerDependencies` in `projects/sagittarius-admin-template/package.json`.
+- Before publishing, bump the version in `projects/sagittarius-admin-template/package.json` (semver: fix = patch, new feature = minor, breaking = major). Only a human publishes – by creating a GitHub Release `vX.Y.Z` (workflow `.github/workflows/publish.yml`); also update `CHANGELOG.md`.
 
-## 8. Postup pri zmene (checklist)
+## 8. Change procedure (checklist)
 
-1. Zmena v knižnici (TS/HTML/SCSS, prípadne token/trieda v `styles/sagittarius-admin.scss`).
-2. Export v `public-api.ts`, ak ide o verejné API; typy do `sagittarius-admin.models.ts`.
-3. Ukážka použitia v dev app (existujúca stránka alebo nová v `src/app/pages/<nazov>/` + routa v `app.routes.ts` + položka v `menuItems` v `app.ts`).
-4. `npx ng build sagittarius-admin-template` a `npx ng build sagittarius-admin-template-example` bez chýb.
-5. Unit testy knižnice (spec vedľa komponentu; pri komponentoch s `routerLink` pridaj `provideRouter([])`).
-6. Vizuálna kontrola v prehliadači: desktop + mobil, svetlá + tmavá téma, otvorený drawer (aj vnorený), zbalený sidebar s hoverom.
-7. Aktualizuj tento súbor, ak sa zmenilo API, sloty, tokeny alebo pravidlá.
+1. Change in the library (TS/HTML/SCSS, possibly a token/class in `styles/sagittarius-admin.scss`).
+2. Export in `public-api.ts` if it is public API; types go to `sagittarius-admin.models.ts`.
+3. Usage example in the dev app (existing page or a new one in `src/app/pages/<name>/` + route in `app.routes.ts` + item in `menuItems` in `app.ts`).
+4. `npx ng build sagittarius-admin-template` and `npx ng build sagittarius-admin-template-example` without errors.
+5. Library unit tests (spec next to the component; for components with `routerLink` add `provideRouter([])`).
+6. Visual check in the browser: desktop + mobile, light + dark theme, open drawer (including nested), collapsed sidebar with hover.
+7. Update this file if the API, slots, tokens or rules changed.
 
-## 9. Vzorová aplikácia (dev)
+## 9. Sample application (dev)
 
 ```
 src/app/
-  app.ts|html            konfigurácia layoutu: menu, používateľ, user menu, akcie v hlavičke, footer
-  app.routes.ts          lazy routy stránok
-  core/demo-data.ts      mock dáta (používatelia, objednávky, tržby)
-  core/users.store.ts    in-memory store (signal) – v reálnej app nahradí API služba
-  core/theme.service.ts  prepínanie svetlá/tmavá téma (trieda .dark-theme na <html>)
-  pages/dashboard        KPI dlaždice, stĺpcový graf (čisté CSS), aktivita, tabuľka
-  pages/users            tabuľka s filtrom, triedením a stránkovaním; riadok otvára drawer
-  pages/user-detail      obsah drawera – detail, tlačidlo Upraviť otvorí vnorený drawer (DrawerRef je optional)
-  pages/user-page        /users/:userId – detail ako samostatná stránka (cieľ fullPageUrl z drawera)
-  pages/user-form        obsah drawera – reaktívny formulár s validáciou, DrawerRef.close() (DrawerRef je optional)
-  pages/user-form-page   /users/new, /users/:userId/edit – formulár ako samostatná stránka (cieľ fullPageUrl)
-  pages/form-example     veľký formulár: sekcie, FormArray položiek, datepicker, súhrn
-  pages/settings         nastavenia: prepínače, výber témy
-  pages/not-found        404 a ukážka prázdneho stavu
+  app.ts|html            layout configuration: menu, user, user menu, header actions, footer
+  app.routes.ts          lazy page routes
+  core/demo-data.ts      mock data (users, orders, revenue)
+  core/users.store.ts    in-memory store (signal) – replaced by an API service in a real app
+  core/theme.service.ts  light/dark theme switching (.dark-theme class on <html>)
+  pages/dashboard        KPI tiles, bar chart (pure CSS), activity, table
+  pages/users            table with filter, sorting and pagination; a row opens the drawer
+  pages/user-detail      drawer content – detail, the Edit button opens a nested drawer (DrawerRef is optional)
+  pages/user-page        /users/:userId – detail as a standalone page (fullPageUrl target from the drawer)
+  pages/user-form        drawer content – reactive form with validation, DrawerRef.close() (DrawerRef is optional)
+  pages/user-form-page   /users/new, /users/:userId/edit – form as a standalone page (fullPageUrl target)
+  pages/form-example     large form: sections, FormArray of items, datepicker, summary
+  pages/settings         settings: toggles, theme selection
+  pages/not-found        404 and empty state example
 ```
 
-Pri novej ukážke kopíruj štruktúru existujúcich stránok (`.sg-page` → `.sg-page-header` → `.sg-card`…), nie vlastné layouty.
+For a new example, copy the structure of existing pages (`.sg-page` → `.sg-page-header` → `.sg-card`…), not custom layouts.
 
-## 10. Známe obmedzenia / nápady na ďalší vývoj
+## 10. Known limitations / ideas for further development
 
-- Menu podporuje len jednu úroveň (+ sekčné nadpisy); vnorené podmenu nie je.
-- Drawer má vždy plnú šírku plochy `main`; voliteľná šírka (napr. `DrawerOptions.width`) by bola rozšírenie API – zachovaj default.
-- `DrawerRef` nevracia výsledok (`afterClosed`); ak bude treba, pridaj ho spätne kompatibilne.
-- Komponenty nepoužívajú `ChangeDetectionStrategy.OnPush`; stav layoutu je v signáloch, takže prechod je možný.
+- The menu supports only one level (+ section headings); nested submenus are not supported.
+- The drawer always has the full width of the `main` area; an optional width (e.g. `DrawerOptions.width`) would be an API extension – keep the default.
+- `DrawerRef` does not return a result (`afterClosed`); if needed, add it in a backward-compatible way.
+- Components do not use `ChangeDetectionStrategy.OnPush`; the layout state is in signals, so the transition is possible.
