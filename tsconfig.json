@@ -36,10 +36,10 @@
       "path": "./projects/sagittarius-admin-template/tsconfig.spec.json"
     },
     {
-      "path": "./projects/sagittarius-admin-template-dev/tsconfig.app.json"
+      "path": "./projects/sagittarius-admin-template-example/tsconfig.app.json"
     },
     {
-      "path": "./projects/sagittarius-admin-template-dev/tsconfig.spec.json"
+      "path": "./projects/sagittarius-admin-template-example/tsconfig.spec.json"
     }
   ]
 }

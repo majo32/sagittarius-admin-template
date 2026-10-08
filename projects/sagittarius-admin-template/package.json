@@ -16,14 +16,14 @@
   ],
   "author": "Marian Spisiak",
   "license": "MIT",
-  "homepage": "https://GITHUB_USER.github.io/sagittarius-admin-template/",
+  "homepage": "https://majo32.github.io/sagittarius-admin-template/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GITHUB_USER/sagittarius-admin-template.git",
+    "url": "git+https://github.com/majo32/sagittarius-admin-template.git",
     "directory": "projects/sagittarius-admin-template"
   },
   "bugs": {
-    "url": "https://github.com/GITHUB_USER/sagittarius-admin-template/issues"
+    "url": "https://github.com/majo32/sagittarius-admin-template/issues"
   },
   "publishConfig": {
     "access": "public"

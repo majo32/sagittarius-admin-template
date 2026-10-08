@@ -1,0 +1,26 @@
+name: Feature request
+description: Suggest a new input, slot, drawer option or utility class.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would it solve?
+      description: Describe the use case in your admin application.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: API sketch (input name, option, CSS class…) if you have one.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives / workarounds
+  - type: checkboxes
+    id: compat
+    attributes:
+      label: Compatibility
+      options:
+        - label: The change can be made without breaking existing apps (no renamed inputs, slots, `sg-admin-theme-*` classes or `--sg-*` tokens).

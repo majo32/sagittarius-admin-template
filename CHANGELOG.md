@@ -12,3 +12,6 @@ First public release on npmjs.com.
 - `DrawerService` / `DrawerRef`: stacked drawer layers with browser back-button support and optional "open as full page" link (`fullPageUrl`).
 - Design tokens (`--sg-*`) with light/dark theme via `light-dark()`, primary color taken from the Angular Material theme.
 - Page utility classes: `sg-page`, `sg-card`, `sg-grid`, `sg-stat`, `sg-badge`, `sg-toolbar`, `sg-form-grid`, `sg-kv`, `sg-empty-state`, …
+- Built-in texts (aria labels, tooltips) configurable via `provideSgAdminLabels()` / `SG_ADMIN_LABELS`; English by default, Slovak set `SG_ADMIN_LABELS_SK` included.
+- Removed the generated placeholder component `SagittariusAdminTemplate` (`lib-sagittarius-admin-template`).
+- Demo app translated to English.

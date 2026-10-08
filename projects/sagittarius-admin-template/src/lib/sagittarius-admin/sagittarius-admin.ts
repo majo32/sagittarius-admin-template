@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, HostListener, OnInit, ViewChild, computed, input, output, signal } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnInit, ViewChild, computed, inject, input, output, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterModule } from '@angular/router';
 import { DrawerComponent } from './drawer-component/drawer-component';
 import { DrawerService } from './drawer-service';
+import { SG_ADMIN_LABELS } from './sagittarius-admin.labels';
 import { SgMenuItem, SgUser, SgUserMenuItem } from './sagittarius-admin.models';
 
 const MOBILE_BREAKPOINT = 800;
@@ -39,6 +40,9 @@ export class SagittariusAdmin implements OnInit, AfterViewInit {
 
   /** Emituje sa pri kliknutí na položku user menu (popri jej `action`). */
   readonly userMenuItemClick = output<SgUserMenuItem>();
+
+  /** Texty layoutu (`provideSgAdminLabels`). */
+  protected readonly labels = inject(SG_ADMIN_LABELS);
 
   readonly isHandset = signal(false);
   readonly sidebarOpen = signal(false);

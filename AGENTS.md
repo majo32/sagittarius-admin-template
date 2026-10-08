@@ -9,7 +9,7 @@ Angular 20 workspace (`angular.json`) s dvoma projektmi:
 | Projekt | Typ | Účel |
 |---|---|---|
 | `projects/sagittarius-admin-template` | knižnica (ng-packagr) | Layout administračnej aplikácie: sidebar, header, obsah, drawer, footer + design tokeny a pomocné CSS triedy. Publikuje sa do npmjs.com ako `sagittarius-admin-template`. |
-| `projects/sagittarius-admin-template-dev` | aplikácia | Vzorová admin aplikácia, ktorá knižnicu používa. Slúži ako živá dokumentácia a na manuálne testovanie. |
+| `projects/sagittarius-admin-template-example` | aplikácia | Vzorová admin aplikácia, ktorá knižnicu používa. Slúži ako živá dokumentácia a na manuálne testovanie. |
 
 Závislosti: Angular 20, Angular Material 20 (M3), CDK, Router. Žiadne ďalšie UI knižnice nepridávaj bez dohody.
 
@@ -19,8 +19,8 @@ Závislosti: Angular 20, Angular Material 20 (M3), CDK, Router. Žiadne ďalšie
 npm ci                                            # inštalácia
 npx ng build sagittarius-admin-template           # build knižnice -> dist/sagittarius-admin-template
 npm run watch                                     # build knižnice v watch režime (pri vývoji)
-npx ng serve sagittarius-admin-template-dev       # dev aplikácia na http://localhost:4200
-npx ng build sagittarius-admin-template-dev       # produkčný build dev aplikácie (kontrola typov šablón)
+npx ng serve sagittarius-admin-template-example       # dev aplikácia na http://localhost:4200
+npx ng build sagittarius-admin-template-example       # produkčný build dev aplikácie (kontrola typov šablón)
 npm run test:ci                                   # všetky testy jednorazovo (potrebuje CHROME_BIN)
 ```
 
@@ -28,13 +28,13 @@ Testy (Karma potrebuje Chrome; ak nie je nainštalovaný, použi napr. Playwrigh
 
 ```bash
 CHROME_BIN=/cesta/k/chrome npx ng test sagittarius-admin-template --watch=false --browsers=ChromeHeadless
-CHROME_BIN=/cesta/k/chrome npx ng test sagittarius-admin-template-dev --watch=false --browsers=ChromeHeadless
+CHROME_BIN=/cesta/k/chrome npx ng test sagittarius-admin-template-example --watch=false --browsers=ChromeHeadless
 ```
 
 ### Dôležité pasce
 
 - **Dev aplikácia importuje knižnicu z `dist/`**, nie zo zdrojákov (`tsconfig.json` → `paths.sagittarius-admin-template = ./dist/sagittarius-admin-template`). Po každej zmene TS/HTML/SCSS knižnice ju treba prebuildovať (alebo mať spustený `npm run watch`).
-- **Vite cache dev servera** si drží predbalenú knižnicu. Ak zmena knižnice nie je vidieť ani po rebuilde, zastav `ng serve`, zmaž `.angular/cache/*/sagittarius-admin-template-dev/vite` a spusti znova.
+- **Vite cache dev servera** si drží predbalenú knižnicu. Ak zmena knižnice nie je vidieť ani po rebuilde, zastav `ng serve`, zmaž `.angular/cache/*/sagittarius-admin-template-example/vite` a spusti znova.
 - Globálny stylesheet knižnice (`projects/sagittarius-admin-template/styles/sagittarius-admin.scss`) dev aplikácia načítava **priamo zo zdrojákov** (viď `angular.json` → `styles`), takže jeho zmeny sa prejavia hneď.
 - Knižnica sa importuje ako `'sagittarius-admin-template'` – v dev app (cez `paths` na `dist/`) aj v cudzích aplikáciách (z npm).
 - `.npmrc` s tokenom nikdy necommituj (je v `.gitignore`); publikovanie robí GitHub Actions cez npm Trusted Publishing. Viď `PUBLIKOVANIE.md`.
@@ -45,11 +45,11 @@ CHROME_BIN=/cesta/k/chrome npx ng test sagittarius-admin-template-dev --watch=fa
 src/lib/sagittarius-admin/
   sagittarius-admin.ts|html|scss     <lib-sagittarius-admin> – celý layout
   sagittarius-admin.models.ts        SgMenuItem, SgUser, SgUserMenuItem, DrawerOptions, DrawerData
+  sagittarius-admin.labels.ts        SgAdminLabels, SG_ADMIN_LABELS (token), SG_ADMIN_LABELS_EN/_SK, provideSgAdminLabels()
   drawer-service.ts                  DrawerService – verejné API na otváranie drawerov
   drawer-ref.ts                      DrawerRef – injektovateľný do komponentu v draweri
   drawer-component/                  host drawera, drží zásobník vrstiev (interné)
     drawer-content/                  obal jednej vrstvy: hlavička (späť/zavrieť, titulok) + telo (interné)
-src/lib/sagittarius-admin-template.ts  pôvodný demo komponent (legacy, nepoužíva sa)
 src/public-api.ts                      jediný vstupný bod – čo tu nie je exportované, nie je verejné
 styles/sagittarius-admin.scss          design tokeny + pomocné triedy (kopíruje sa do balíčka ako asset)
 ```
@@ -75,10 +75,15 @@ Content projection sloty (atribút na projektovanom elemente):
 - `DrawerService.open(Component, data?, { title, fullPageUrl, fullPageIcon, fullPageLabel })` vloží komponent ako novú vrstvu nad obsah. Vrstvy sa dajú vnárať (detail → úprava); vnorená vrstva má šípku späť, prvá krížik.
 - `data` sú hodnoty vstupov komponentu – pre signal `input()` sa volá `setInput`, ostatné sa priradia na inštanciu. Typ `DrawerData<T>` rozbaľuje signal inputy.
 - Komponent v draweri získa `inject(DrawerRef)` → `close()`, `setTitle()`, `title` signal, `setFullPageUrl()`, `fullPageUrl` signal.
-- `fullPageUrl` (string = `navigateByUrl`, pole = príkazy routera): v pravom rohu hlavičky vrstvy sa zobrazí ikona (`fullPageIcon`, default `open_in_full`; tooltip/aria `fullPageLabel`), ktorá je `routerLink` s `replaceUrl` – zavrie všetky vrstvy a nahradí záznam histórie drawera cieľovou stránkou. Komponent použiteľný aj mimo drawera injektuje `DrawerRef` s `{ optional: true }`.
+- `fullPageUrl` (string = `navigateByUrl`, pole = príkazy routera): v pravom rohu hlavičky vrstvy sa zobrazí ikona (`fullPageIcon`, default `open_in_full`; tooltip/aria `fullPageLabel`, default `SgAdminLabels.drawerFullPage`), ktorá je `routerLink` s `replaceUrl` – zavrie všetky vrstvy a nahradí záznam histórie drawera cieľovou stránkou. Komponent použiteľný aj mimo drawera injektuje `DrawerRef` s `{ optional: true }`.
 - Každé otvorenie pridá záznam do histórie (`Location.go` s rovnakou URL). Tlačidlo Späť v prehliadači / na mobile zavrie vrchnú vrstvu (`PlatformLocation.onPopState`). `DrawerRef.close()` robí `history.back()`.
 - Imperatívna navigácia routera (klik v menu) zavrie všetky vrstvy.
 - Spätná kompatibilita: ak sú zadané `data` a komponent nemá vlastnú `close`, dostane `close()` property.
+
+### Texty (i18n)
+
+- Aria-labely a tooltipy layoutu a drawera sú v `SgAdminLabels`; token `SG_ADMIN_LABELS` má default `SG_ADMIN_LABELS_EN`.
+- Aplikácia ich nastaví `provideSgAdminLabels(SG_ADMIN_LABELS_SK)` alebo len časť kľúčov `provideSgAdminLabels({ drawerClose: '…' })` – chýbajúce sa doplnia z angličtiny.
 
 ## 4. Layout – NEMENIŤ bez výslovného pokynu
 
@@ -155,7 +160,8 @@ Nová opakujúca sa UI vzorka → pridaj triedu do globálneho stylesheetu (pref
 - Prístup k `localStorage` vždy v `try/catch`.
 - Žiadne `console.log` v knižnici.
 - Selektory knižnice majú prefix `lib-`, CSS triedy `sg-`, verejné typy `Sg*` (výnimka: existujúce `DrawerService`, `DrawerRef`).
-- Komentáre a texty UI sú po slovensky; identifikátory po anglicky. Texty zabudované v knižnici (aria-label „Zavrieť“, „Späť“…) sú zatiaľ natvrdo – pri zavádzaní i18n ich presuň do vstupov alebo `InjectionToken`.
+- Komentáre sú po slovensky; identifikátory po anglicky. Texty UI v dev app sú **anglicky** (verejné demo).
+- Texty zabudované v knižnici (aria-label, tooltipy) nepíš natvrdo – patria do `SgAdminLabels` (`sagittarius-admin.labels.ts`): nový kľúč doplň do rozhrania aj do `SG_ADMIN_LABELS_EN` a `SG_ADMIN_LABELS_SK`, v komponente `inject(SG_ADMIN_LABELS)`. Aplikácia ich mení cez `provideSgAdminLabels()`.
 - Formátovanie: `.editorconfig` (2 medzery, jednoduché úvodzovky v TS).
 
 ## 7. Verejné API a verziovanie
@@ -170,7 +176,7 @@ Nová opakujúca sa UI vzorka → pridaj triedu do globálneho stylesheetu (pref
 1. Zmena v knižnici (TS/HTML/SCSS, prípadne token/trieda v `styles/sagittarius-admin.scss`).
 2. Export v `public-api.ts`, ak ide o verejné API; typy do `sagittarius-admin.models.ts`.
 3. Ukážka použitia v dev app (existujúca stránka alebo nová v `src/app/pages/<nazov>/` + routa v `app.routes.ts` + položka v `menuItems` v `app.ts`).
-4. `npx ng build sagittarius-admin-template` a `npx ng build sagittarius-admin-template-dev` bez chýb.
+4. `npx ng build sagittarius-admin-template` a `npx ng build sagittarius-admin-template-example` bez chýb.
 5. Unit testy knižnice (spec vedľa komponentu; pri komponentoch s `routerLink` pridaj `provideRouter([])`).
 6. Vizuálna kontrola v prehliadači: desktop + mobil, svetlá + tmavá téma, otvorený drawer (aj vnorený), zbalený sidebar s hoverom.
 7. Aktualizuj tento súbor, ak sa zmenilo API, sloty, tokeny alebo pravidlá.
@@ -200,8 +206,6 @@ Pri novej ukážke kopíruj štruktúru existujúcich stránok (`.sg-page` → `
 ## 10. Známe obmedzenia / nápady na ďalší vývoj
 
 - Menu podporuje len jednu úroveň (+ sekčné nadpisy); vnorené podmenu nie je.
-- Texty v knižnici nie sú lokalizovateľné (viď kap. 6).
 - Drawer má vždy plnú šírku plochy `main`; voliteľná šírka (napr. `DrawerOptions.width`) by bola rozšírenie API – zachovaj default.
 - `DrawerRef` nevracia výsledok (`afterClosed`); ak bude treba, pridaj ho spätne kompatibilne.
-- `SagittariusAdminTemplate` (`lib-sagittarius-admin-template`) je pozostatok z generovania; je exportovaný, takže jeho odstránenie je breaking change.
 - Komponenty nepoužívajú `ChangeDetectionStrategy.OnPush`; stav layoutu je v signáloch, takže prechod je možný.

@@ -27,12 +27,12 @@ jobs:
       - run: npm ci
       - run: npm run build:lib
       - name: Build demo
-        run: npx ng build sagittarius-admin-template-dev --base-href "/${{ github.event.repository.name }}/"
+        run: npx ng build sagittarius-admin-template-example --base-href "/${{ github.event.repository.name }}/"
       # SPA fallback – GitHub Pages vráti 404.html pre neznáme cesty (napr. /users/42 po refreshi)
-      - run: cp dist/sagittarius-admin-template-dev/browser/index.html dist/sagittarius-admin-template-dev/browser/404.html
+      - run: cp dist/sagittarius-admin-template-example/browser/index.html dist/sagittarius-admin-template-example/browser/404.html
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/sagittarius-admin-template-dev/browser
+          path: dist/sagittarius-admin-template-example/browser
 
   deploy:
     needs: build

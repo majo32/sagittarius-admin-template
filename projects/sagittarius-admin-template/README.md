@@ -2,8 +2,8 @@
 
 Admin application layout for **Angular 20 + Angular Material 3**: collapsible sidebar (hover overlay on desktop, full-screen overlay on mobile), header with user menu, content area with **stacked drawers**, footer. Ships with design tokens (light/dark theme) and CSS utility classes for building pages.
 
-- **Live demo:** https://GITHUB_USER.github.io/sagittarius-admin-template/
-- **Source & demo app:** https://github.com/GITHUB_USER/sagittarius-admin-template
+- **Live demo:** https://majo32.github.io/sagittarius-admin-template/
+- **Source & demo app:** https://github.com/majo32/sagittarius-admin-template
 
 ## Installation
 
@@ -120,7 +120,7 @@ export class UserDetail {
 | `title` | `string` | `''` | Title in the drawer header (runtime: `DrawerRef.setTitle()`). |
 | `fullPageUrl` | `string \| any[]` | – | URL of a standalone page with the same content. When set, an icon link in the header closes all layers and navigates there (replacing the drawer history entry). |
 | `fullPageIcon` | `string` | `open_in_full` | Material icon of that link. |
-| `fullPageLabel` | `string` | `Otvoriť na celej stránke` | Tooltip and `aria-label`. |
+| `fullPageLabel` | `string` | `Open as full page` | Tooltip and `aria-label` (default from `SgAdminLabels.drawerFullPage`). |
 
 ```ts
 this.drawer.open(UserDetail, { userId: user.id }, {
@@ -130,6 +130,23 @@ this.drawer.open(UserDetail, { userId: user.id }, {
 ```
 
 A component that is used both inside and outside a drawer should inject the ref optionally: `inject(DrawerRef, { optional: true })`.
+
+## Built-in texts (i18n)
+
+Aria labels and tooltips rendered by the layout (open/close menu, drawer close/back, full-page link…) are English by default. Provide your own via `provideSgAdminLabels()` – missing keys fall back to English. A Slovak set is included:
+
+```ts
+import { SG_ADMIN_LABELS_SK, provideSgAdminLabels } from 'sagittarius-admin-template';
+
+bootstrapApplication(App, {
+  providers: [
+    provideSgAdminLabels(SG_ADMIN_LABELS_SK),
+    // or only some keys: provideSgAdminLabels({ drawerClose: 'Schließen', drawerBack: 'Zurück' })
+  ],
+});
+```
+
+Keys (`SgAdminLabels`): `openMenu`, `closeMenu`, `expandMenu`, `collapseMenu`, `userMenu`, `drawerClose`, `drawerBack`, `drawerFullPage`.
 
 ## Theming
 
@@ -151,7 +168,6 @@ Dark theme: set `color-scheme: dark` on `<html>` (e.g. with a class, as above).
 
 ## Notes
 
-- Built-in UI strings (aria labels like "Zavrieť"/"Späť") are currently Slovak; i18n is planned.
 - The sidebar menu supports one level plus section headers.
 
 ## License

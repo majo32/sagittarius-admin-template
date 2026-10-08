@@ -1,12 +1,12 @@
 # Sagittarius Admin Template
 
-[![CI](https://github.com/GITHUB_USER/sagittarius-admin-template/actions/workflows/ci.yml/badge.svg)](https://github.com/GITHUB_USER/sagittarius-admin-template/actions/workflows/ci.yml)
+[![CI](https://github.com/majo32/sagittarius-admin-template/actions/workflows/ci.yml/badge.svg)](https://github.com/majo32/sagittarius-admin-template/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/sagittarius-admin-template.svg)](https://www.npmjs.com/package/sagittarius-admin-template)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Admin application layout for **Angular 20 + Angular Material 3**. Drop one component into your app and get a collapsible sidebar, a header with a user menu, stacked drawers, a footer, light/dark theming and a set of CSS classes for building consistent pages.
 
-**[▶ Live demo](https://GITHUB_USER.github.io/sagittarius-admin-template/)** · **[npm package](https://www.npmjs.com/package/sagittarius-admin-template)** · **[Library docs](projects/sagittarius-admin-template/README.md)**
+**[▶ Live demo](https://majo32.github.io/sagittarius-admin-template/)** · **[npm package](https://www.npmjs.com/package/sagittarius-admin-template)** · **[Library docs](projects/sagittarius-admin-template/README.md)**
 
 | Light | Dark |
 |---|---|
@@ -54,7 +54,7 @@ Add the stylesheet `node_modules/sagittarius-admin-template/styles/sagittarius-a
 | Path | Description |
 |---|---|
 | [`projects/sagittarius-admin-template`](projects/sagittarius-admin-template) | The library (built with ng-packagr, published to npm). |
-| [`projects/sagittarius-admin-template-dev`](projects/sagittarius-admin-template-dev) | Demo admin app – dashboard, table with drawer detail, forms, settings, empty states. Deployed to GitHub Pages. |
+| [`projects/sagittarius-admin-template-example`](projects/sagittarius-admin-template-example) | Demo admin app – dashboard, table with drawer detail, forms, settings, empty states. Deployed to GitHub Pages. |
 
 ## Development
 
@@ -66,7 +66,7 @@ npm run watch         # rebuild the library on change (run next to npm start)
 npm run test:ci       # unit tests (headless Chrome)
 ```
 
-Contributor and AI-agent guidelines (layout contract, tokens, conventions) are in [AGENTS.md](AGENTS.md) (Slovak).
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute and [SECURITY.md](SECURITY.md) for reporting vulnerabilities. Detailed guidelines for contributors and AI agents (layout contract, tokens, conventions) are in [AGENTS.md](AGENTS.md) (Slovak).
 
 ## Releasing
 

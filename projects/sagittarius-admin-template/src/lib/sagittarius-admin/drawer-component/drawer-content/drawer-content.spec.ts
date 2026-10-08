@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 
 import { DrawerContent } from './drawer-content';
 import { DrawerRef } from '../../drawer-ref';
+import { SG_ADMIN_LABELS_SK, provideSgAdminLabels } from '../../sagittarius-admin.labels';
 
 describe('DrawerContent', () => {
   let component: DrawerContent;
@@ -35,6 +36,28 @@ describe('DrawerContent', () => {
     const link: HTMLAnchorElement = fixture.nativeElement.querySelector('.sg-admin-theme-drawer-full-page');
     expect(link).not.toBeNull();
     expect(link.getAttribute('href')).toBe('/users/42');
-    expect(link.getAttribute('aria-label')).toBe('Otvoriť na celej stránke');
+    expect(link.getAttribute('aria-label')).toBe('Open as full page');
+  });
+
+  it('fullPageLabel prebije predvolený text', () => {
+    fixture.componentRef.setInput('fullPageLabel', 'Detail');
+    component.drawerRef().setFullPageUrl('/users/42');
+    fixture.detectChanges();
+    const link: HTMLAnchorElement = fixture.nativeElement.querySelector('.sg-admin-theme-drawer-full-page');
+    expect(link.getAttribute('aria-label')).toBe('Detail');
+  });
+});
+
+describe('DrawerContent s provideSgAdminLabels', () => {
+  it('použije zadané texty', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerContent],
+      providers: [provideRouter([]), provideSgAdminLabels(SG_ADMIN_LABELS_SK)],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(DrawerContent);
+    fixture.componentRef.setInput('drawerRef', new DrawerRef(() => {}));
+    fixture.detectChanges();
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector('.sg-admin-theme-drawer-close button');
+    expect(button.getAttribute('aria-label')).toBe('Zavrieť');
   });
 });

@@ -1,0 +1,57 @@
+<!-- sg-drawer-page len v draweri; na samostatnej stránke padding dáva sg-page -->
+<form [class.sg-drawer-page]="drawerRef" [class.sg-page-narrow]="drawerRef" [formGroup]="form" (ngSubmit)="save()">
+  <section class="sg-card">
+    <div class="sg-card-body">
+      <h3 class="sg-form-section-title">Personal details</h3>
+      <div class="sg-form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>First name</mat-label>
+          <input matInput formControlName="firstName" cdkFocusInitial>
+          <mat-error>First name is required</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Last name</mat-label>
+          <input matInput formControlName="lastName">
+          <mat-error>Last name is required</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email">
+          <mat-icon matSuffix>mail</mat-icon>
+          <mat-error>Enter a valid email</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Phone</mat-label>
+          <input matInput formControlName="phone">
+          <mat-hint>Format +421 9xx xxx xxx</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <h3 class="sg-form-section-title">Access</h3>
+      <div class="sg-form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Role</mat-label>
+          <mat-select formControlName="role">
+            @for (r of roles; track r) { <mat-option [value]="r">{{ r }}</mat-option> }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Department</mat-label>
+          <mat-select formControlName="department">
+            @for (d of departments; track d) { <mat-option [value]="d">{{ d }}</mat-option> }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            @for (s of statuses; track s) { <mat-option [value]="s">{{ statusLabels[s] }}</mat-option> }
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="sg-card-footer">
+      <button matButton type="button" (click)="cancel()">Cancel</button>
+      <button matButton="filled" type="submit"><mat-icon>save</mat-icon> Save</button>
+    </div>
+  </section>
+</form>

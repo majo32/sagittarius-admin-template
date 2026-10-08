@@ -33,35 +33,35 @@
         }
       }
     },
-    "sagittarius-admin-template-dev": {
+    "sagittarius-admin-template-example": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
         }
       },
-      "root": "projects/sagittarius-admin-template-dev",
-      "sourceRoot": "projects/sagittarius-admin-template-dev/src",
+      "root": "projects/sagittarius-admin-template-example",
+      "sourceRoot": "projects/sagittarius-admin-template-example/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "browser": "projects/sagittarius-admin-template-dev/src/main.ts",
+            "browser": "projects/sagittarius-admin-template-example/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "projects/sagittarius-admin-template-dev/tsconfig.app.json",
+            "tsConfig": "projects/sagittarius-admin-template-example/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/sagittarius-admin-template-dev/public"
+                "input": "projects/sagittarius-admin-template-example/public"
               }
             ],
             "styles": [
               "projects/sagittarius-admin-template/styles/sagittarius-admin.scss",
-              "projects/sagittarius-admin-template-dev/src/styles.scss"
+              "projects/sagittarius-admin-template-example/src/styles.scss"
             ]
           },
           "configurations": {
@@ -92,10 +92,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "sagittarius-admin-template-dev:build:production"
+              "buildTarget": "sagittarius-admin-template-example:build:production"
             },
             "development": {
-              "buildTarget": "sagittarius-admin-template-dev:build:development"
+              "buildTarget": "sagittarius-admin-template-example:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -110,17 +110,17 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "tsConfig": "projects/sagittarius-admin-template-dev/tsconfig.spec.json",
+            "tsConfig": "projects/sagittarius-admin-template-example/tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/sagittarius-admin-template-dev/public"
+                "input": "projects/sagittarius-admin-template-example/public"
               }
             ],
             "styles": [
               "projects/sagittarius-admin-template/styles/sagittarius-admin.scss",
-              "projects/sagittarius-admin-template-dev/src/styles.scss"
+              "projects/sagittarius-admin-template-example/src/styles.scss"
             ]
           }
         }

@@ -47,7 +47,7 @@ export interface DrawerOptions {
   fullPageUrl?: string | any[];
   /** Material ikona tlačidla (default `open_in_full`). */
   fullPageIcon?: string;
-  /** Tooltip / aria-label tlačidla (default „Otvoriť na celej stránke“). */
+  /** Tooltip / aria-label tlačidla (default `SgAdminLabels.drawerFullPage` – „Open as full page“). */
   fullPageLabel?: string;
 }
 

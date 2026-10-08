@@ -1,7 +1,7 @@
 <div class="sg-admin-theme-drawer-wrapper" [class.animating]="animating()" (animationend)="onAnimationEnd($event)">
   <div class="sg-admin-theme-drawer-header">
     <div class="sg-admin-theme-drawer-close">
-      <button matIconButton (click)="close()" [attr.aria-label]="pos() ? 'Späť' : 'Zavrieť'">
+      <button matIconButton (click)="close()" [attr.aria-label]="pos() ? labels.drawerBack : labels.drawerClose">
         <mat-icon>{{ pos() ? 'arrow_back' : 'close' }}</mat-icon>
       </button>
     </div>

@@ -1,0 +1,90 @@
+<div class="sg-page">
+  <div class="sg-page-header">
+    <div>
+      <nav class="sg-breadcrumbs"><a routerLink="/dashboard">Home</a><span>Management</span><span>Users</span></nav>
+      <h1 class="sg-page-title">Users</h1>
+      <p class="sg-page-subtitle">Click a row to open its detail in a drawer.</p>
+    </div>
+    <div class="sg-page-actions">
+      <button matButton="filled" (click)="create()"><mat-icon>person_add</mat-icon> Add user</button>
+    </div>
+  </div>
+
+  <section class="sg-card">
+    <div class="sg-toolbar">
+      <mat-form-field appearance="outline" class="search">
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput placeholder="Search name or email" [ngModel]="search()" (ngModelChange)="search.set($event)">
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-select placeholder="Role" [ngModel]="role()" (ngModelChange)="role.set($event)">
+          <mat-option value="">All roles</mat-option>
+          @for (r of roles; track r) { <mat-option [value]="r">{{ r }}</mat-option> }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-select placeholder="Status" [ngModel]="status()" (ngModelChange)="status.set($event)">
+          <mat-option value="">All statuses</mat-option>
+          @for (s of statuses; track s) { <mat-option [value]="s">{{ statusLabels[s] }}</mat-option> }
+        </mat-select>
+      </mat-form-field>
+      <span class="sg-toolbar-spacer"></span>
+      <span class="sg-muted">{{ filtered().length }} records</span>
+    </div>
+
+    <div class="sg-card-body-flush">
+      <table mat-table [dataSource]="dataSource" matSort class="sg-table-clickable">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+          <td mat-cell *matCellDef="let u">
+            <div class="user-cell">
+              <span class="sg-avatar">{{ u.firstName[0] }}{{ u.lastName[0] }}</span>
+              <div>
+                <div class="user-name">{{ u.firstName }} {{ u.lastName }}</div>
+                <div class="sg-muted">{{ u.email }}</div>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Role</th>
+          <td mat-cell *matCellDef="let u">{{ u.role }}</td>
+        </ng-container>
+        <ng-container matColumnDef="department">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Department</th>
+          <td mat-cell *matCellDef="let u">{{ u.department }}</td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+          <td mat-cell *matCellDef="let u">
+            <span class="sg-badge" [class]="statusBadge[u.status]">{{ statusLabels[u.status] }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="lastLogin">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Last sign-in</th>
+          <td mat-cell *matCellDef="let u" class="sg-nowrap">{{ u.lastLogin | date:'medium' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let u" class="sg-text-right">
+            <mat-icon class="sg-muted">chevron_right</mat-icon>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="columns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns" (click)="openDetail(row)" (keydown.enter)="openDetail(row)"
+          tabindex="0"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td [attr.colspan]="columns.length">
+            <div class="sg-empty-state">
+              <mat-icon>search_off</mat-icon>
+              <h3>Nothing found</h3>
+              <p>Try adjusting your search or filters.</p>
+              <button matButton (click)="clearFilters()">Clear filters</button>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+  </section>
+</div>

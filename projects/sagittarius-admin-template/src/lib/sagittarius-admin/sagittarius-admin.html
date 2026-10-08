@@ -15,19 +15,19 @@
           <span class="sg-admin-theme-sidebar-header-logo-lg">{{ appTitle() }}</span>
         </a>
         <button matIconButton class="mobile-only sg-admin-theme-sidebar-header-menu-button" (click)="closeSidebar()"
-          aria-label="Zavrieť menu">
+          [attr.aria-label]="labels.closeMenu">
           <mat-icon>close</mat-icon>
         </button>
         @if (collapsed()) {
         @if (hovered()) {
         <button matIconButton class="pc-only sg-admin-theme-sidebar-header-menu-button" (click)="toggleSidebar()"
-          aria-label="Pripnúť menu">
+          [attr.aria-label]="labels.expandMenu">
           <mat-icon>keyboard_double_arrow_right</mat-icon>
         </button>
         }
         } @else {
         <button matIconButton class="pc-only sg-admin-theme-sidebar-header-menu-button" (click)="toggleSidebar()"
-          aria-label="Zbaliť menu">
+          [attr.aria-label]="labels.collapseMenu">
           <mat-icon>keyboard_double_arrow_left</mat-icon>
         </button>
         }
@@ -83,7 +83,7 @@
     <header class="sg-admin-theme-header">
       <div class="sg-admin-theme-header-left-box">
         <button matIconButton class="mobile-only sg-admin-theme-header-left-box-menu-button" (click)="openSidebar()"
-          aria-label="Otvoriť menu">
+          [attr.aria-label]="labels.openMenu">
           <mat-icon>menu</mat-icon>
         </button>
         <a class="mobile-only sg-admin-theme-header-logo-lg" [routerLink]="homeRoute()">{{ appTitle() }}</a>
@@ -96,7 +96,7 @@
       <div class="sg-admin-theme-header-right-box">
         <ng-content select="[sg-admin-header-actions]"></ng-content>
         @if (user(); as u) {
-        <button class="sg-admin-theme-header-user" [matMenuTriggerFor]="userMenu" aria-label="Používateľské menu">
+        <button class="sg-admin-theme-header-user" [matMenuTriggerFor]="userMenu" [attr.aria-label]="labels.userMenu">
           <span class="sg-admin-theme-header-user-avatar">
             @if (u.avatarUrl) {
             <img [src]="u.avatarUrl" alt="">

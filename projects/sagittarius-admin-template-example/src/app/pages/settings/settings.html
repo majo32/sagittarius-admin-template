@@ -1,0 +1,95 @@
+<div class="sg-page sg-page-narrow">
+  <div class="sg-page-header">
+    <div>
+      <h1 class="sg-page-title">Settings</h1>
+      <p class="sg-page-subtitle">Profile, appearance and notifications.</p>
+    </div>
+    <div class="sg-page-actions">
+      <button matButton="filled" (click)="save()"><mat-icon>save</mat-icon> Save changes</button>
+    </div>
+  </div>
+
+  <section class="sg-card">
+    <div class="sg-card-header">
+      <div>
+        <h2 class="sg-card-title">Profile</h2>
+        <p class="sg-card-subtitle">Basic information about your account</p>
+      </div>
+    </div>
+    <div class="sg-card-body">
+      <div class="sg-form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Name</mat-label>
+          <input matInput [(ngModel)]="profile.name">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" [(ngModel)]="profile.email">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Language</mat-label>
+          <mat-select [(ngModel)]="profile.language">
+            <mat-option value="sk">Slovak</mat-option>
+            <mat-option value="cs">Czech</mat-option>
+            <mat-option value="en">English</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Time zone</mat-label>
+          <mat-select [(ngModel)]="profile.timezone">
+            <mat-option value="Europe/Bratislava">Europe / Bratislava</mat-option>
+            <mat-option value="Europe/Prague">Europe / Prague</mat-option>
+            <mat-option value="UTC">UTC</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </section>
+
+  <section class="sg-card">
+    <div class="sg-card-header">
+      <div>
+        <h2 class="sg-card-title">Appearance</h2>
+        <p class="sg-card-subtitle">The theme is stored in the browser</p>
+      </div>
+    </div>
+    <div class="sg-card-body setting-row">
+      <div>
+        <div class="setting-label">Color theme</div>
+        <div class="sg-muted">Dark theme switches <code>color-scheme</code> on &lt;html&gt;</div>
+      </div>
+      <mat-button-toggle-group [value]="theme.dark() ? 'dark' : 'light'" (change)="theme.set($event.value === 'dark')"
+        hideSingleSelectionIndicator>
+        <mat-button-toggle value="light"><mat-icon>light_mode</mat-icon> Light</mat-button-toggle>
+        <mat-button-toggle value="dark"><mat-icon>dark_mode</mat-icon> Dark</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+  </section>
+
+  <section class="sg-card">
+    <div class="sg-card-header">
+      <h2 class="sg-card-title">Notifications</h2>
+    </div>
+    <ul class="setting-list">
+      @for (n of notifications; track n.key) {
+      <li class="setting-row">
+        <div>
+          <div class="setting-label">{{ n.label }}</div>
+          <div class="sg-muted">{{ n.description }}</div>
+        </div>
+        <mat-slide-toggle [(ngModel)]="n.enabled" [aria-label]="n.label"></mat-slide-toggle>
+      </li>
+      }
+    </ul>
+  </section>
+
+  <section class="sg-card danger-zone">
+    <div class="sg-card-body setting-row">
+      <div>
+        <div class="setting-label">Delete account</div>
+        <div class="sg-muted">This action cannot be undone.</div>
+      </div>
+      <button matButton="outlined" class="danger-button">Delete account</button>
+    </div>
+  </section>
+</div>

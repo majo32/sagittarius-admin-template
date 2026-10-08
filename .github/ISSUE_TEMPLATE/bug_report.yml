@@ -1,0 +1,57 @@
+name: Bug report
+description: Something in the layout, drawer or styles does not work as expected.
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug. Screenshots are welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Ideally reproducible in the demo app or a minimal StackBlitz.
+      placeholder: |
+        1. Open …
+        2. Click …
+        3. See …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: sagittarius-admin-template version
+      placeholder: e.g. 0.2.0
+    validations:
+      required: true
+  - type: input
+    id: angular
+    attributes:
+      label: Angular / Angular Material version
+      placeholder: e.g. 20.2.1 / 20.2.2
+    validations:
+      required: true
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Where does it happen?
+      multiple: true
+      options:
+        - Desktop (> 800 px)
+        - Mobile (≤ 800 px)
+        - Light theme
+        - Dark theme
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and OS
+      placeholder: e.g. Chrome 140 on macOS, Safari on iOS 19

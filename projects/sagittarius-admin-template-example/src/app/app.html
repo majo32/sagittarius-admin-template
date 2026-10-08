@@ -1,0 +1,19 @@
+<lib-sagittarius-admin appTitle="Sagittarius Admin" appShortTitle="SA" homeRoute="/dashboard" [menuItems]="menuItems"
+  [user]="user" [userMenuItems]="userMenuItems">
+
+  <div sg-admin-header-actions class="header-actions">
+    <button matIconButton (click)="theme.toggle()" [matTooltip]="theme.dark() ? 'Light theme' : 'Dark theme'">
+      <mat-icon>{{ theme.dark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    </button>
+    <button matIconButton matTooltip="Notifications">
+      <mat-icon matBadge="4" matBadgeSize="small" aria-hidden="false">notifications</mat-icon>
+    </button>
+  </div>
+
+  <router-outlet />
+
+  <div sg-admin-footer class="footer">
+    <span>Sagittarius Admin Template · MIT</span>
+    <a href="https://github.com/majo32/sagittarius-admin-template" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</lib-sagittarius-admin>
