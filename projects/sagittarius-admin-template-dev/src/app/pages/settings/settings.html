@@ -1,0 +1,95 @@
+<div class="sg-page sg-page-narrow">
+  <div class="sg-page-header">
+    <div>
+      <h1 class="sg-page-title">Nastavenia</h1>
+      <p class="sg-page-subtitle">Profil, vzhľad a notifikácie.</p>
+    </div>
+    <div class="sg-page-actions">
+      <button matButton="filled" (click)="save()"><mat-icon>save</mat-icon> Uložiť zmeny</button>
+    </div>
+  </div>
+
+  <section class="sg-card">
+    <div class="sg-card-header">
+      <div>
+        <h2 class="sg-card-title">Profil</h2>
+        <p class="sg-card-subtitle">Základné údaje o vašom účte</p>
+      </div>
+    </div>
+    <div class="sg-card-body">
+      <div class="sg-form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Meno</mat-label>
+          <input matInput [(ngModel)]="profile.name">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>E-mail</mat-label>
+          <input matInput type="email" [(ngModel)]="profile.email">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Jazyk</mat-label>
+          <mat-select [(ngModel)]="profile.language">
+            <mat-option value="sk">Slovenčina</mat-option>
+            <mat-option value="cs">Čeština</mat-option>
+            <mat-option value="en">English</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Časové pásmo</mat-label>
+          <mat-select [(ngModel)]="profile.timezone">
+            <mat-option value="Europe/Bratislava">Európa / Bratislava</mat-option>
+            <mat-option value="Europe/Prague">Európa / Praha</mat-option>
+            <mat-option value="UTC">UTC</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </section>
+
+  <section class="sg-card">
+    <div class="sg-card-header">
+      <div>
+        <h2 class="sg-card-title">Vzhľad</h2>
+        <p class="sg-card-subtitle">Téma sa ukladá v prehliadači</p>
+      </div>
+    </div>
+    <div class="sg-card-body setting-row">
+      <div>
+        <div class="setting-label">Farebná téma</div>
+        <div class="sg-muted">Tmavá téma prepína <code>color-scheme</code> na &lt;html&gt;</div>
+      </div>
+      <mat-button-toggle-group [value]="theme.dark() ? 'dark' : 'light'" (change)="theme.set($event.value === 'dark')"
+        hideSingleSelectionIndicator>
+        <mat-button-toggle value="light"><mat-icon>light_mode</mat-icon> Svetlá</mat-button-toggle>
+        <mat-button-toggle value="dark"><mat-icon>dark_mode</mat-icon> Tmavá</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+  </section>
+
+  <section class="sg-card">
+    <div class="sg-card-header">
+      <h2 class="sg-card-title">Notifikácie</h2>
+    </div>
+    <ul class="setting-list">
+      @for (n of notifications; track n.key) {
+      <li class="setting-row">
+        <div>
+          <div class="setting-label">{{ n.label }}</div>
+          <div class="sg-muted">{{ n.description }}</div>
+        </div>
+        <mat-slide-toggle [(ngModel)]="n.enabled" [aria-label]="n.label"></mat-slide-toggle>
+      </li>
+      }
+    </ul>
+  </section>
+
+  <section class="sg-card danger-zone">
+    <div class="sg-card-body setting-row">
+      <div>
+        <div class="setting-label">Zmazať účet</div>
+        <div class="sg-muted">Túto akciu nie je možné vrátiť späť.</div>
+      </div>
+      <button matButton="outlined" class="danger-button">Zmazať účet</button>
+    </div>
+  </section>
+</div>

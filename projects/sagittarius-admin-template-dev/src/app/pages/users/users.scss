@@ -1,0 +1,22 @@
+.search {
+  width: min(100%, 320px);
+}
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+
+  .user-name {
+    font-weight: 500;
+  }
+
+  .sg-muted {
+    font-size: 12px;
+  }
+}
+
+mat-paginator {
+  border-top: 1px solid var(--sg-border);
+}

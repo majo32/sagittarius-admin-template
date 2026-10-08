@@ -1,0 +1,53 @@
+{
+  "name": "sagittarius-admin-template-workspace",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve sagittarius-admin-template-dev",
+    "build:lib": "ng build sagittarius-admin-template",
+    "build:demo": "ng build sagittarius-admin-template-dev",
+    "build": "npm run build:lib && npm run build:demo",
+    "watch": "ng build sagittarius-admin-template --watch --configuration development",
+    "test": "ng test sagittarius-admin-template",
+    "test:ci": "ng test sagittarius-admin-template --watch=false --browsers=ChromeHeadless && ng test sagittarius-admin-template-dev --watch=false --browsers=ChromeHeadless"
+  },
+  "prettier": {
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "dependencies": {
+    "@angular/cdk": "^20.2.2",
+    "@angular/common": "^20.1.0",
+    "@angular/compiler": "^20.1.0",
+    "@angular/core": "^20.1.0",
+    "@angular/forms": "^20.1.0",
+    "@angular/material": "^20.2.2",
+    "@angular/platform-browser": "^20.1.0",
+    "@angular/router": "^20.1.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^20.2.2",
+    "@angular/cli": "^20.1.4",
+    "@angular/compiler-cli": "^20.1.0",
+    "@types/jasmine": "~5.1.0",
+    "jasmine-core": "~5.8.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "ng-packagr": "^20.2.0",
+    "typescript": "~5.8.2"
+  }
+}

@@ -1,0 +1,116 @@
+.chart {
+  position: relative;
+  height: 260px;
+  padding: 0 0 24px 36px;
+}
+
+.chart-grid {
+  position: absolute;
+  inset: 0 0 24px 36px;
+
+  .chart-gridline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px solid var(--sg-border);
+
+    span {
+      position: absolute;
+      right: calc(100% + 8px);
+      top: -8px;
+      font-size: 11px;
+      color: var(--sg-text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+  }
+}
+
+.chart-bars {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.chart-col {
+  position: relative;
+  flex: 1 1 0;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  outline: none;
+
+  .chart-bar {
+    width: min(60%, 28px);
+    height: var(--h);
+    border-radius: 4px 4px 0 0;
+    background: color-mix(in srgb, var(--sg-primary) 45%, var(--sg-surface));
+    transition: background-color 120ms;
+
+    &.current {
+      background: var(--sg-primary);
+    }
+  }
+
+  .chart-label {
+    position: absolute;
+    top: calc(100% + 6px);
+    font-size: 11px;
+    color: var(--sg-text-muted);
+  }
+
+  .chart-tooltip {
+    position: absolute;
+    bottom: calc(var(--h) + 6px);
+    z-index: 1;
+    padding: 6px 10px;
+    border-radius: var(--sg-radius-sm);
+    background: var(--sg-text);
+    color: var(--sg-surface);
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 120ms;
+  }
+
+  &:hover,
+  &:focus-visible {
+    .chart-bar {
+      background: var(--sg-primary);
+    }
+
+    .chart-tooltip {
+      opacity: 1;
+    }
+  }
+}
+
+.activity {
+  list-style: none;
+  margin: 0;
+  padding: 8px 20px 16px;
+
+  li {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--sg-border);
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+
+  .sg-avatar mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .sg-muted {
+    font-size: 12px;
+  }
+}

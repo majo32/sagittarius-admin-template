@@ -1,0 +1,150 @@
+<div class="sg-admin-theme" [class.isHandset]="isHandset()" [class.isDesktop]="!isHandset()">
+  <aside class="sg-admin-theme-sidebar" [class.open]="sidebarOpen()" [class.collapsed]="collapsed()"
+    [class.expanded]="!collapsed()">
+    <div class="sg-admin-theme-sidebar-wrapper" [class.hover]="hovered()" [class.no-hover]="!hovered()"
+      (mouseenter)="setHovered(true)" (mouseleave)="setHovered(false)">
+      <div class="sg-admin-theme-sidebar-header">
+        <a class="sg-admin-theme-brand" [routerLink]="homeRoute()" (click)="onNavigate()">
+          <span class="sg-admin-theme-brand-mark">
+            @if (logoUrl()) {
+            <img [src]="logoUrl()" alt="">
+            } @else {
+            {{ shortTitle() }}
+            }
+          </span>
+          <span class="sg-admin-theme-sidebar-header-logo-lg">{{ appTitle() }}</span>
+        </a>
+        <button matIconButton class="mobile-only sg-admin-theme-sidebar-header-menu-button" (click)="closeSidebar()"
+          aria-label="Zavrieť menu">
+          <mat-icon>close</mat-icon>
+        </button>
+        @if (collapsed()) {
+        @if (hovered()) {
+        <button matIconButton class="pc-only sg-admin-theme-sidebar-header-menu-button" (click)="toggleSidebar()"
+          aria-label="Pripnúť menu">
+          <mat-icon>keyboard_double_arrow_right</mat-icon>
+        </button>
+        }
+        } @else {
+        <button matIconButton class="pc-only sg-admin-theme-sidebar-header-menu-button" (click)="toggleSidebar()"
+          aria-label="Zbaliť menu">
+          <mat-icon>keyboard_double_arrow_left</mat-icon>
+        </button>
+        }
+      </div>
+      <div class="sg-admin-theme-sidebar-body">
+        @if (user(); as u) {
+        <div class="sg-admin-theme-sidebar-profile">
+          <div class="sg-admin-theme-sidebar-profile-header">
+            <div class="sg-admin-theme-sidebar-profile-header-avatar">
+              @if (u.avatarUrl) {
+              <img [src]="u.avatarUrl" alt="">
+              } @else {
+              {{ userInitials() }}
+              }
+            </div>
+          </div>
+          <div class="sg-admin-theme-sidebar-profile-footer">
+            <div class="sg-admin-theme-sidebar-profile-footer-name">{{ u.name }}</div>
+            @if (u.subtitle) {
+            <div class="sg-admin-theme-sidebar-profile-footer-subtitle">{{ u.subtitle }}</div>
+            }
+          </div>
+        </div>
+        }
+        <nav>
+          @for (item of menuItems(); track $index) {
+          @if (item.spacer) {
+          <div class="sg-admin-theme-sidebar-nav-item-spacer">
+            <span class="sg-admin-theme-sidebar-nav-item-icon"></span>
+            <span class="sg-admin-theme-sidebar-nav-item-label">{{ item.label }}</span>
+          </div>
+          } @else {
+          <a class="sg-admin-theme-sidebar-nav-item" [routerLink]="item.route" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: !!item.exact }" (click)="onNavigate()" [attr.title]="item.label">
+            <span class="sg-admin-theme-sidebar-nav-item-wrapper">
+              <mat-icon class="sg-admin-theme-sidebar-nav-item-icon">{{ item.icon || 'circle' }}</mat-icon>
+              <span class="sg-admin-theme-sidebar-nav-item-label">{{ item.label }}</span>
+            </span>
+            @if (item.badge !== undefined && item.badge !== null) {
+            <span class="sg-admin-theme-sidebar-nav-item-badge">{{ item.badge }}</span>
+            }
+          </a>
+          }
+          }
+        </nav>
+        <div class="sg-admin-theme-sidebar-bottom">
+          <ng-content select="[sg-admin-sidebar-bottom]"></ng-content>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sg-admin-theme-body">
+    <header class="sg-admin-theme-header">
+      <div class="sg-admin-theme-header-left-box">
+        <button matIconButton class="mobile-only sg-admin-theme-header-left-box-menu-button" (click)="openSidebar()"
+          aria-label="Otvoriť menu">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <a class="mobile-only sg-admin-theme-header-logo-lg" [routerLink]="homeRoute()">{{ appTitle() }}</a>
+        <ng-content select="[sg-admin-header-left]"></ng-content>
+      </div>
+      <div class="sg-admin-theme-header-middle-box">
+        <ng-content select="[sg-admin-header-middle]"></ng-content>
+        <ng-content select="[sg-admin-header]"></ng-content>
+      </div>
+      <div class="sg-admin-theme-header-right-box">
+        <ng-content select="[sg-admin-header-actions]"></ng-content>
+        @if (user(); as u) {
+        <button class="sg-admin-theme-header-user" [matMenuTriggerFor]="userMenu" aria-label="Používateľské menu">
+          <span class="sg-admin-theme-header-user-avatar">
+            @if (u.avatarUrl) {
+            <img [src]="u.avatarUrl" alt="">
+            } @else {
+            {{ userInitials() }}
+            }
+          </span>
+          <span class="sg-admin-theme-header-user-name pc-only">{{ u.name }}</span>
+          <mat-icon class="pc-only">expand_more</mat-icon>
+        </button>
+        <mat-menu #userMenu="matMenu" xPosition="before" class="sg-admin-user-menu">
+          <div class="sg-admin-user-menu-header">
+            <div class="sg-admin-user-menu-name">{{ u.name }}</div>
+            @if (u.subtitle) {
+            <div class="sg-admin-user-menu-subtitle">{{ u.subtitle }}</div>
+            }
+          </div>
+          @for (item of userMenuItems(); track $index) {
+          @if (item.divider) {
+          <div class="sg-admin-user-menu-divider"></div>
+          } @else if (item.route) {
+          <a mat-menu-item [routerLink]="item.route" [disabled]="!!item.disabled" (click)="onUserMenuItem(item)">
+            @if (item.icon) { <mat-icon>{{ item.icon }}</mat-icon> }
+            <span>{{ item.label }}</span>
+          </a>
+          } @else {
+          <button mat-menu-item [disabled]="!!item.disabled" (click)="onUserMenuItem(item)">
+            @if (item.icon) { <mat-icon>{{ item.icon }}</mat-icon> }
+            <span>{{ item.label }}</span>
+          </button>
+          }
+          }
+        </mat-menu>
+        }
+      </div>
+    </header>
+    <main class="sg-admin-theme-main">
+      <div class="sg-admin-theme-drawer" [class.closed]="!drawerOpen()">
+        <lib-drawer-component></lib-drawer-component>
+      </div>
+      <div class="sg-admin-theme-content" [attr.inert]="drawerOpen() ? '' : null">
+        <ng-content></ng-content>
+      </div>
+    </main>
+    <footer class="sg-admin-theme-footer">
+      <ng-content select="[sg-admin-footer]">
+        <span>{{ appTitle() }}</span>
+      </ng-content>
+    </footer>
+  </div>
+</div>

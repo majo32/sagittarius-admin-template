@@ -1,0 +1,45 @@
+# Publikuje knižnicu do npmjs.com pri vytvorení GitHub Release (tag vX.Y.Z).
+# Autentifikácia: npm Trusted Publishing (OIDC) – žiadny token v repozitári.
+# Záloha: ak trusted publishing nie je nastavený, použije sa secret NPM_TOKEN.
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - run: npm install -g npm@latest
+      - run: npm ci
+      - name: Check version matches tag
+        if: github.event_name == 'release'
+        run: |
+          PKG=$(node -p "require('./projects/sagittarius-admin-template/package.json').version")
+          TAG="${GITHUB_REF_NAME#v}"
+          if [ "$PKG" != "$TAG" ]; then
+            echo "::error::Verzia v package.json ($PKG) nesedí s tagom ($GITHUB_REF_NAME)"; exit 1
+          fi
+      - run: npm run build:lib
+      - run: npm run test:ci
+      - name: Publish
+        working-directory: dist/sagittarius-admin-template
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          TAG=latest
+          case "$VERSION" in *-*) TAG=next ;; esac
+          npm publish --access public --provenance --tag "$TAG"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,0 +1,76 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: var(--sg-gap);
+  align-items: start;
+
+  @media (max-width: 1100px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sg-gap);
+}
+
+.summary {
+  position: sticky;
+  top: 0;
+
+  .sg-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 8px 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--sg-border);
+
+  strong {
+    font-size: 22px;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.terms-error {
+  font-size: 12px;
+  color: var(--sg-danger);
+}
+
+.radio-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 20px;
+
+  label {
+    font-size: 12px;
+  }
+}
+
+.item-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0 12px;
+
+  .item-name { flex: 1 1 240px; }
+  .item-qty { flex: 0 1 120px; }
+  .item-price { flex: 0 1 150px; }
+
+  button {
+    margin-top: 8px;
+  }
+}
+
+.note {
+  width: 100%;
+}

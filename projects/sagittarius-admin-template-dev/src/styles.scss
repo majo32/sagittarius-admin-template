@@ -1,0 +1,31 @@
+// Angular Material téma (Material 3). Farby sa cez --mat-sys-* premietnu aj do šablóny
+// (--sg-primary). Svetlá/tmavá téma sa prepína triedou .dark-theme na <html>.
+@use '@angular/material' as mat;
+
+html {
+  color-scheme: light;
+
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+
+  &.dark-theme {
+    color-scheme: dark;
+  }
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--sg-bg);
+  color: var(--sg-text);
+  font: var(--mat-sys-body-medium);
+}

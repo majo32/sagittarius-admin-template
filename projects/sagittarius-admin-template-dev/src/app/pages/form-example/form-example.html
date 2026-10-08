@@ -1,0 +1,115 @@
+<form class="sg-page" [formGroup]="form" (ngSubmit)="submit()">
+  <div class="sg-page-header">
+    <div>
+      <h1 class="sg-page-title">Nová objednávka</h1>
+      <p class="sg-page-subtitle">Ukážka formulára s validáciou, dynamickými položkami a súhrnom.</p>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="main">
+      <section class="sg-card">
+        <div class="sg-card-header">
+          <h2 class="sg-card-title">Zákazník a doručenie</h2>
+        </div>
+        <div class="sg-card-body">
+          <div class="sg-form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Zákazník</mat-label>
+              <mat-select formControlName="customer">
+                @for (c of customers; track c) { <mat-option [value]="c">{{ c }}</mat-option> }
+              </mat-select>
+              <mat-error>Vyberte zákazníka</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Kontaktný e-mail</mat-label>
+              <input matInput type="email" formControlName="contactEmail">
+              <mat-error>Zadajte platný e-mail</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Dátum doručenia</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="deliveryDate">
+              <mat-datepicker-toggle matIconSuffix [for]="picker" />
+              <mat-datepicker #picker />
+              <mat-error>Zvoľte dátum</mat-error>
+            </mat-form-field>
+            <div class="radio-field">
+              <label class="sg-muted">Spôsob doručenia</label>
+              <mat-radio-group formControlName="delivery">
+                <mat-radio-button value="courier">Kuriér</mat-radio-button>
+                <mat-radio-button value="pickup">Osobný odber</mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sg-card">
+        <div class="sg-card-header">
+          <h2 class="sg-card-title">Položky</h2>
+          <button matButton type="button" (click)="addItem()"><mat-icon>add</mat-icon> Pridať položku</button>
+        </div>
+        <div class="sg-card-body">
+          <div formArrayName="items">
+          @for (item of items.controls; track item; let i = $index) {
+          <div class="item-row" [formGroupName]="i">
+            <mat-form-field appearance="outline" class="item-name">
+              <mat-label>Názov</mat-label>
+              <input matInput formControlName="name">
+              <mat-error>Povinné</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="item-qty">
+              <mat-label>Množstvo</mat-label>
+              <input matInput type="number" min="1" formControlName="quantity">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="item-price">
+              <mat-label>Cena / ks</mat-label>
+              <input matInput type="number" min="0" formControlName="price">
+              <span matTextSuffix>€</span>
+            </mat-form-field>
+            <button matIconButton type="button" (click)="removeItem(i)" [disabled]="items.length === 1"
+              aria-label="Odstrániť položku">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </div>
+          }
+          </div>
+          <mat-form-field appearance="outline" class="note">
+            <mat-label>Poznámka</mat-label>
+            <textarea matInput rows="3" formControlName="note"></textarea>
+            <mat-hint align="end">{{ form.controls.note.value.length || 0 }} / 500</mat-hint>
+          </mat-form-field>
+        </div>
+      </section>
+    </div>
+
+    <aside class="sg-card summary">
+      <div class="sg-card-header">
+        <h2 class="sg-card-title">Súhrn</h2>
+      </div>
+      <div class="sg-card-body">
+        <dl class="sg-kv">
+          <dt>Počet položiek</dt>
+          <dd>{{ items.length }}</dd>
+          <dt>Bez DPH</dt>
+          <dd>{{ total() | currency:'EUR' }}</dd>
+          <dt>DPH 23 %</dt>
+          <dd>{{ total() * 0.23 | currency:'EUR' }}</dd>
+        </dl>
+        <div class="summary-total">
+          <span>Spolu</span>
+          <strong>{{ total() * 1.23 | currency:'EUR' }}</strong>
+        </div>
+        <mat-checkbox formControlName="invoiceByEmail">Poslať faktúru e-mailom</mat-checkbox>
+        <mat-checkbox formControlName="terms">Súhlasím s obchodnými podmienkami</mat-checkbox>
+        @if (form.controls.terms.touched && form.controls.terms.invalid) {
+        <div class="terms-error">Súhlas je povinný</div>
+        }
+      </div>
+      <div class="sg-card-footer">
+        <button matButton type="button" (click)="reset()">Vyčistiť</button>
+        <button matButton="filled" type="submit"><mat-icon>send</mat-icon> Odoslať</button>
+      </div>
+    </aside>
+  </div>
+</form>

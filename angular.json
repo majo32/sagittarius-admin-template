@@ -1,0 +1,130 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "sagittarius-admin-template": {
+      "projectType": "library",
+      "root": "projects/sagittarius-admin-template",
+      "sourceRoot": "projects/sagittarius-admin-template/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/sagittarius-admin-template/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/sagittarius-admin-template/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/sagittarius-admin-template/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "sagittarius-admin-template-dev": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/sagittarius-admin-template-dev",
+      "sourceRoot": "projects/sagittarius-admin-template-dev/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "projects/sagittarius-admin-template-dev/src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "projects/sagittarius-admin-template-dev/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/sagittarius-admin-template-dev/public"
+              }
+            ],
+            "styles": [
+              "projects/sagittarius-admin-template/styles/sagittarius-admin.scss",
+              "projects/sagittarius-admin-template-dev/src/styles.scss"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "800kB",
+                  "maximumError": "1.5MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "sagittarius-admin-template-dev:build:production"
+            },
+            "development": {
+              "buildTarget": "sagittarius-admin-template-dev:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular/build:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "projects/sagittarius-admin-template-dev/tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/sagittarius-admin-template-dev/public"
+              }
+            ],
+            "styles": [
+              "projects/sagittarius-admin-template/styles/sagittarius-admin.scss",
+              "projects/sagittarius-admin-template-dev/src/styles.scss"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

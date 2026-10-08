@@ -1,0 +1,496 @@
+// ═══════════════════════════════════════════════════════════════════════════
+// Sagittarius Admin Template – globálne štýly
+//
+// Načítanie v aplikácii (angular.json → projects.<app>.architect.build.options.styles):
+//   "node_modules/sagittarius-admin-template/styles/sagittarius-admin.scss"
+//
+// Obsahuje:
+//   1. design tokeny (CSS premenné --sg-*) – svetlá aj tmavá téma cez light-dark()
+//   2. štýly pre overlay časti layoutu (user menu)
+//   3. pomocné triedy pre obsah stránok (.sg-page, .sg-card, .sg-stat, .sg-badge…)
+//
+// Tmavá téma: nastavte `color-scheme: dark` na <html> (napr. triedou).
+// Prispôsobenie: prepíšte ľubovoľnú premennú v :root vo vlastných štýloch.
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ─── 1. Tokeny ─────────────────────────────────────────────────────────────
+:root {
+  // Typografia
+  --sg-font: var(--mat-sys-body-medium-font, Roboto, 'Helvetica Neue', Arial, sans-serif);
+
+  // Rozmery layoutu
+  --sg-header-height: 56px;
+  --sg-footer-height: 40px;
+  --sg-drawer-header-height: 52px;
+  --sg-sidebar-width: 260px;
+  --sg-sidebar-collapsed-width: 64px;
+  --sg-page-padding: 24px;
+  --sg-page-max-width: 1440px;
+  --sg-gap: 16px;
+
+  // Zaoblenia a tiene
+  --sg-radius-sm: 8px;
+  --sg-radius: 12px;
+  --sg-shadow-sm: 0 1px 2px rgb(16 24 40 / 0.06);
+  --sg-shadow: 0 1px 3px rgb(16 24 40 / 0.08), 0 1px 2px rgb(16 24 40 / 0.04);
+  --sg-shadow-lg: 0 12px 32px -8px rgb(16 24 40 / 0.35);
+
+  // Primárna farba – preberá sa z Angular Material témy
+  --sg-primary: var(--mat-sys-primary, #1f5fd6);
+  --sg-on-primary: var(--mat-sys-on-primary, #ffffff);
+  --sg-primary-soft: color-mix(in srgb, var(--sg-primary) 12%, transparent);
+
+  // Neutrálne plochy (svetlá, tmavá)
+  --sg-bg: light-dark(#f3f5f9, #0e1117);
+  --sg-surface: light-dark(#ffffff, #161a22);
+  --sg-surface-2: light-dark(#f8f9fc, #1c212b);
+  --sg-header-bg: var(--sg-surface);
+  --sg-border: light-dark(#e3e7ee, #272d39);
+  --sg-hover: light-dark(rgb(16 24 40 / 0.05), rgb(255 255 255 / 0.06));
+  --sg-scrollbar: light-dark(rgb(16 24 40 / 0.25), rgb(255 255 255 / 0.2));
+
+  // Text
+  --sg-text: light-dark(#1b2230, #e5e8ef);
+  --sg-text-muted: light-dark(#667085, #98a1b3);
+
+  // Sidebar – tmavý v oboch témach
+  --sg-sidebar-bg: #111a2e;
+  --sg-sidebar-border: rgb(255 255 255 / 0.07);
+  --sg-sidebar-text: #b8c1d3;
+  --sg-sidebar-text-strong: #ffffff;
+  --sg-sidebar-text-muted: #7482a0;
+  --sg-sidebar-hover: rgb(255 255 255 / 0.06);
+  --sg-sidebar-active-bg: rgb(255 255 255 / 0.09);
+  --sg-sidebar-accent: #5b9bff;
+  --sg-sidebar-accent-2: #8b6cff;
+  --sg-sidebar-accent-contrast: #0b1224;
+  --sg-sidebar-scrollbar: rgb(255 255 255 / 0.18);
+
+  // Stavové farby (text / pozadie)
+  --sg-success: light-dark(#0f7b4f, #4fd39a);
+  --sg-success-soft: light-dark(#e3f6ec, rgb(79 211 154 / 0.14));
+  --sg-warning: light-dark(#a15c00, #f5b74e);
+  --sg-warning-soft: light-dark(#fdf1dc, rgb(245 183 78 / 0.14));
+  --sg-danger: light-dark(#c0292b, #ff7a7a);
+  --sg-danger-soft: light-dark(#fde6e6, rgb(255 122 122 / 0.14));
+  --sg-info: light-dark(#1f5fd6, #7fb0ff);
+  --sg-info-soft: light-dark(#e3edfd, rgb(127 176 255 / 0.14));
+  --sg-neutral: var(--sg-text-muted);
+  --sg-neutral-soft: light-dark(#eef1f5, rgb(255 255 255 / 0.07));
+}
+
+// ─── 2. Overlay časti layoutu ──────────────────────────────────────────────
+.sg-admin-user-menu {
+  min-width: 220px !important;
+
+  .sg-admin-user-menu-header {
+    padding: 12px 16px 10px;
+    border-bottom: 1px solid var(--sg-border);
+    margin-bottom: 4px;
+  }
+
+  .sg-admin-user-menu-name {
+    font-weight: 600;
+    color: var(--sg-text);
+  }
+
+  .sg-admin-user-menu-subtitle {
+    font-size: 12px;
+    color: var(--sg-text-muted);
+  }
+
+  .sg-admin-user-menu-divider {
+    height: 1px;
+    margin: 4px 0;
+    background: var(--sg-border);
+  }
+}
+
+// ─── 3. Obsah stránok ──────────────────────────────────────────────────────
+
+// Obsah stránok a drawerov počíta rozmery vrátane paddingu
+:where(.sg-page, .sg-drawer-page),
+:where(.sg-page, .sg-drawer-page) * {
+  box-sizing: border-box;
+}
+
+// Stránka: <div class="sg-page"> … </div>
+.sg-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sg-gap);
+  width: 100%;
+  max-width: var(--sg-page-max-width);
+  margin: 0 auto;
+  padding: var(--sg-page-padding);
+}
+
+.sg-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-bottom: 4px;
+
+  .sg-page-title {
+    margin: 0;
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 600;
+    color: var(--sg-text);
+  }
+
+  .sg-page-subtitle {
+    margin: 2px 0 0;
+    color: var(--sg-text-muted);
+  }
+
+  .sg-page-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.sg-breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: var(--sg-text-muted);
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--sg-primary);
+    }
+  }
+
+  > :not(:last-child)::after {
+    content: '/';
+    margin-left: 6px;
+    opacity: 0.6;
+  }
+}
+
+// Karta
+.sg-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--sg-surface);
+  border: 1px solid var(--sg-border);
+  border-radius: var(--sg-radius);
+  box-shadow: var(--sg-shadow-sm);
+  color: var(--sg-text);
+  // Material tabuľka a paginator v karte preberajú pozadie karty
+  --mat-table-background-color: transparent;
+  --mat-paginator-container-background-color: transparent;
+
+  .sg-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 56px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--sg-border);
+  }
+
+  .sg-card-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .sg-card-subtitle {
+    margin: 0;
+    font-size: 12px;
+    color: var(--sg-text-muted);
+  }
+
+  .sg-card-body {
+    padding: 20px;
+    flex-grow: 1;
+  }
+
+  .sg-card-body-flush {
+    flex-grow: 1;
+    overflow-x: auto;
+  }
+
+  .sg-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 20px;
+    border-top: 1px solid var(--sg-border);
+    background: var(--sg-surface-2);
+    border-radius: 0 0 var(--sg-radius) var(--sg-radius);
+  }
+}
+
+// Mriežka – automaticky sa zalamuje; .sg-grid-2/3/4 = max. počet stĺpcov
+.sg-grid {
+  display: grid;
+  gap: var(--sg-gap);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+
+  &.sg-grid-2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, max(320px, calc((100% - var(--sg-gap)) / 2))), 1fr)); }
+  &.sg-grid-3 { grid-template-columns: repeat(auto-fit, minmax(min(100%, max(260px, calc((100% - 2 * var(--sg-gap)) / 3))), 1fr)); }
+  &.sg-grid-4 { grid-template-columns: repeat(auto-fit, minmax(min(100%, max(200px, calc((100% - 3 * var(--sg-gap)) / 4))), 1fr)); }
+
+  .sg-span-2 { grid-column: span 2; }
+
+  @media (max-width: 1100px) {
+    .sg-span-2 { grid-column: auto; }
+  }
+}
+
+// KPI dlaždica
+.sg-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 20px;
+
+  .sg-stat-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .sg-stat-label {
+    font-size: 13px;
+    color: var(--sg-text-muted);
+  }
+
+  .sg-stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--sg-radius-sm);
+    background: var(--sg-primary-soft);
+    color: var(--sg-primary);
+  }
+
+  .sg-stat-value {
+    font-size: 28px;
+    line-height: 34px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sg-stat-delta {
+    font-size: 12px;
+    color: var(--sg-text-muted);
+
+    .up { color: var(--sg-success); font-weight: 600; }
+    .down { color: var(--sg-danger); font-weight: 600; }
+  }
+}
+
+// Odznak / stav: <span class="sg-badge sg-badge-success">Aktívny</span>
+.sg-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 11px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--sg-neutral);
+  background: var(--sg-neutral-soft);
+
+  &::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  &.sg-badge-plain::before { display: none; }
+  &.sg-badge-success { color: var(--sg-success); background: var(--sg-success-soft); }
+  &.sg-badge-warning { color: var(--sg-warning); background: var(--sg-warning-soft); }
+  &.sg-badge-danger { color: var(--sg-danger); background: var(--sg-danger-soft); }
+  &.sg-badge-info { color: var(--sg-info); background: var(--sg-info-soft); }
+}
+
+// Avatar s iniciálami
+.sg-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--sg-primary);
+  background: var(--sg-primary-soft);
+
+  &.sg-avatar-lg {
+    width: 64px;
+    height: 64px;
+    font-size: 22px;
+  }
+}
+
+// Riadok filtrov nad tabuľkou
+.sg-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--sg-border);
+
+  .sg-toolbar-spacer {
+    flex: 1 1 auto;
+  }
+
+  // kompaktné Material form fieldy bez rezervy na hint
+  .mat-mdc-form-field {
+    --mat-form-field-container-height: 40px;
+    --mat-form-field-container-vertical-padding: 8px;
+    --mat-form-field-filled-with-label-container-padding-top: 8px;
+    --mat-form-field-filled-with-label-container-padding-bottom: 8px;
+  }
+
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+}
+
+// Klikateľné riadky tabuľky
+.sg-table-clickable .mat-mdc-row {
+  cursor: pointer;
+  transition: background-color 120ms;
+
+  &:hover {
+    background: var(--sg-hover);
+  }
+}
+
+// Formulár v mriežke; .sg-col-full = cez celú šírku
+.sg-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: 4px 16px;
+
+  .sg-col-full {
+    grid-column: 1 / -1;
+  }
+}
+
+.sg-form-section-title {
+  margin: 8px 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sg-text-muted);
+}
+
+// Zoznam kľúč–hodnota pre detail
+.sg-kv {
+  display: grid;
+  grid-template-columns: minmax(120px, max-content) 1fr;
+  gap: 10px 24px;
+  margin: 0;
+
+  dt {
+    color: var(--sg-text-muted);
+  }
+
+  dd {
+    margin: 0;
+    color: var(--sg-text);
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+// Prázdny stav
+.sg-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--sg-text-muted);
+
+  .mat-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 48px;
+    opacity: 0.5;
+  }
+
+  h3 {
+    margin: 8px 0 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--sg-text);
+  }
+
+  p {
+    margin: 0;
+    max-width: 420px;
+  }
+}
+
+// Obsah v draweri: <div class="sg-drawer-page"> … </div>
+.sg-drawer-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sg-gap);
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--sg-page-padding);
+}
+
+.sg-page.sg-page-narrow,
+.sg-drawer-page.sg-page-narrow {
+  max-width: 880px;
+}
+
+.sg-muted {
+  color: var(--sg-text-muted);
+}
+
+.sg-text-right {
+  text-align: right;
+}
+
+.sg-nowrap {
+  white-space: nowrap;
+}
+
+@media (max-width: 800px) {
+  :root {
+    --sg-page-padding: 16px;
+    --sg-gap: 12px;
+  }
+
+  .sg-page-header .sg-page-title {
+    font-size: 20px;
+    line-height: 28px;
+  }
+}

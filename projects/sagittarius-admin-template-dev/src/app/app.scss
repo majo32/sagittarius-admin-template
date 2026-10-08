@@ -1,0 +1,16 @@
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--sg-text-muted);
+}
+
+.footer {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.footer a {
+  color: inherit;
+}

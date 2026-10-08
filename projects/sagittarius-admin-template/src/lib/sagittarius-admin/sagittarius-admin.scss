@@ -1,0 +1,592 @@
+// Všetky farby a rozmery pochádzajú z CSS premenných --sg-* definovaných
+// v styles/sagittarius-admin.scss (musí byť načítaný v globálnych štýloch aplikácie).
+
+:host {
+  display: block;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.sg-admin-theme {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  font-family: var(--sg-font);
+  color: var(--sg-text);
+  background: var(--sg-bg);
+
+  // ─── Sidebar ──────────────────────────────────────────────────────────────
+  .sg-admin-theme-sidebar {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    flex-shrink: 0;
+    width: var(--sg-sidebar-width);
+    position: relative;
+    z-index: 3;
+    // tmavý sidebar => tmavé scrollbary a Material komponenty
+    color-scheme: dark;
+
+    .sg-admin-theme-sidebar-wrapper {
+      display: flex;
+      height: 100%;
+      flex-direction: column;
+      width: var(--sg-sidebar-width);
+      position: relative;
+      z-index: 3;
+      background: var(--sg-sidebar-bg);
+      color: var(--sg-sidebar-text);
+      border-right: 1px solid var(--sg-sidebar-border);
+    }
+
+    &.collapsed {
+      width: var(--sg-sidebar-collapsed-width);
+
+      .sg-admin-theme-sidebar-wrapper {
+        width: var(--sg-sidebar-collapsed-width);
+        transition: width 250ms cubic-bezier(0.2, 0, 0, 1), box-shadow 250ms;
+        position: absolute;
+        z-index: 9;
+
+        &.hover {
+          width: var(--sg-sidebar-width);
+          box-shadow: var(--sg-shadow-lg);
+        }
+      }
+
+      .sg-admin-theme-sidebar-wrapper.no-hover {
+        .sg-admin-theme-sidebar-header {
+          padding: 0;
+          justify-content: center;
+
+          .sg-admin-theme-sidebar-header-logo-lg {
+            display: none;
+          }
+        }
+
+        .sg-admin-theme-sidebar-profile {
+          padding: 16px 0;
+
+          .sg-admin-theme-sidebar-profile-header-avatar {
+            width: 36px;
+            height: 36px;
+            font-size: 13px;
+          }
+
+          .sg-admin-theme-sidebar-profile-footer {
+            display: none;
+          }
+        }
+
+        .sg-admin-theme-sidebar-body nav {
+          .sg-admin-theme-sidebar-nav-item-spacer {
+            justify-content: center;
+            padding: 12px 0 8px;
+
+            .sg-admin-theme-sidebar-nav-item-icon {
+              display: block;
+            }
+
+            .sg-admin-theme-sidebar-nav-item-label {
+              display: none;
+            }
+          }
+
+          .sg-admin-theme-sidebar-nav-item {
+            justify-content: center;
+            padding: 0;
+
+            .sg-admin-theme-sidebar-nav-item-wrapper .sg-admin-theme-sidebar-nav-item-label,
+            .sg-admin-theme-sidebar-nav-item-badge {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+
+    .sg-admin-theme-sidebar-header {
+      display: flex;
+      width: 100%;
+      flex-direction: row;
+      min-height: var(--sg-header-height);
+      max-height: var(--sg-header-height);
+      padding: 0 8px 0 14px;
+      justify-content: space-between;
+      align-items: center;
+      overflow: hidden;
+      border-bottom: 1px solid var(--sg-sidebar-border);
+      transition: padding 200ms ease-in-out;
+
+      .sg-admin-theme-sidebar-header-menu-button {
+        color: var(--sg-sidebar-text-muted);
+        flex-shrink: 0;
+      }
+    }
+
+    .sg-admin-theme-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      color: var(--sg-sidebar-text-strong);
+      text-decoration: none;
+
+      .sg-admin-theme-brand-mark {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 34px;
+        height: 34px;
+        border-radius: var(--sg-radius-sm);
+        background: var(--sg-sidebar-accent);
+        color: var(--sg-sidebar-accent-contrast);
+        font-weight: 700;
+        font-size: 14px;
+        letter-spacing: 0.02em;
+        overflow: hidden;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+      }
+
+      .sg-admin-theme-sidebar-header-logo-lg {
+        font-size: 16px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .sg-admin-theme-sidebar-body {
+      display: flex;
+      width: 100%;
+      flex-grow: 1;
+      flex-direction: column;
+      overflow-x: hidden;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--sg-sidebar-scrollbar) transparent;
+
+      nav {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: 8px 10px;
+
+        .sg-admin-theme-sidebar-nav-item-spacer {
+          display: flex;
+          align-items: center;
+          padding: 16px 12px 6px;
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--sg-sidebar-text-muted);
+          white-space: nowrap;
+
+          .sg-admin-theme-sidebar-nav-item-icon {
+            display: none;
+            width: 18px;
+            height: 1px;
+            background: var(--sg-sidebar-border);
+          }
+        }
+
+        .sg-admin-theme-sidebar-nav-item {
+          position: relative;
+          width: 100%;
+          min-height: 40px;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 10px 0 12px;
+          border-radius: var(--sg-radius-sm);
+          color: var(--sg-sidebar-text);
+          text-decoration: none;
+          white-space: nowrap;
+          transition: background-color 150ms, color 150ms;
+
+          &:hover {
+            background: var(--sg-sidebar-hover);
+            color: var(--sg-sidebar-text-strong);
+          }
+
+          &:focus-visible {
+            outline: 2px solid var(--sg-sidebar-accent);
+            outline-offset: -2px;
+          }
+
+          &.active {
+            background: var(--sg-sidebar-active-bg);
+            color: var(--sg-sidebar-text-strong);
+
+            &::before {
+              content: '';
+              position: absolute;
+              left: -10px;
+              top: 8px;
+              bottom: 8px;
+              width: 3px;
+              border-radius: 0 3px 3px 0;
+              background: var(--sg-sidebar-accent);
+            }
+
+            .sg-admin-theme-sidebar-nav-item-icon {
+              color: var(--sg-sidebar-accent);
+            }
+          }
+
+          .sg-admin-theme-sidebar-nav-item-wrapper {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+
+            .sg-admin-theme-sidebar-nav-item-icon {
+              flex-shrink: 0;
+              font-size: 20px;
+              width: 20px;
+              height: 20px;
+            }
+
+            .sg-admin-theme-sidebar-nav-item-label {
+              font-size: 14px;
+              font-weight: 500;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+          }
+
+          .sg-admin-theme-sidebar-nav-item-badge {
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 10px;
+            background: var(--sg-sidebar-accent);
+            color: var(--sg-sidebar-accent-contrast);
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+      }
+
+      .sg-admin-theme-sidebar-bottom {
+        margin-top: auto;
+      }
+    }
+
+    .sg-admin-theme-sidebar-profile {
+      padding: 20px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      transition: padding 200ms;
+
+      .sg-admin-theme-sidebar-profile-header {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+
+        .sg-admin-theme-sidebar-profile-header-avatar {
+          width: 56px;
+          height: 56px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          font-weight: 600;
+          font-size: 18px;
+          color: var(--sg-sidebar-accent-contrast);
+          background: linear-gradient(135deg, var(--sg-sidebar-accent), var(--sg-sidebar-accent-2));
+          box-shadow: 0 0 0 3px var(--sg-sidebar-bg), 0 0 0 4px var(--sg-sidebar-border);
+          transition: width 200ms, height 200ms;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+      }
+
+      .sg-admin-theme-sidebar-profile-footer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        padding-top: 10px;
+        text-align: center;
+        white-space: nowrap;
+
+        .sg-admin-theme-sidebar-profile-footer-name {
+          font-weight: 600;
+          color: var(--sg-sidebar-text-strong);
+        }
+
+        .sg-admin-theme-sidebar-profile-footer-subtitle {
+          font-size: 12px;
+          color: var(--sg-sidebar-text-muted);
+        }
+      }
+    }
+  }
+
+  // ─── Pravá časť: header, main, footer ─────────────────────────────────────
+  .sg-admin-theme-body {
+    flex-grow: 1;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sg-admin-theme-header {
+    width: 100%;
+    min-height: var(--sg-header-height);
+    max-height: var(--sg-header-height);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px 0 20px;
+    position: relative;
+    z-index: 2;
+    background: var(--sg-header-bg);
+    border-bottom: 1px solid var(--sg-border);
+
+    .sg-admin-theme-header-left-box,
+    .sg-admin-theme-header-middle-box,
+    .sg-admin-theme-header-right-box {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+      height: 100%;
+      min-width: 0;
+    }
+
+    .sg-admin-theme-header-middle-box {
+      flex: 1 1 auto;
+      justify-content: center;
+    }
+
+    .sg-admin-theme-header-left-box-menu-button {
+      color: var(--sg-text);
+    }
+
+    .sg-admin-theme-header-logo-lg {
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--sg-text);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .sg-admin-theme-header-right-box {
+      color: var(--sg-text-muted);
+    }
+
+    .sg-admin-theme-header-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 40px;
+      padding: 0 6px 0 4px;
+      border: 0;
+      border-radius: 20px;
+      background: transparent;
+      color: var(--sg-text);
+      font: inherit;
+      cursor: pointer;
+      transition: background-color 150ms;
+
+      &:hover,
+      &[aria-expanded='true'] {
+        background: var(--sg-hover);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--sg-primary);
+      }
+
+      .sg-admin-theme-header-user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--sg-on-primary);
+        background: var(--sg-primary);
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .sg-admin-theme-header-user-name {
+        font-weight: 500;
+        max-width: 180px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      mat-icon {
+        color: var(--sg-text-muted);
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  .sg-admin-theme-main {
+    width: 100%;
+    flex-grow: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: auto;
+    background: var(--sg-bg);
+
+    .sg-admin-theme-drawer {
+      position: absolute;
+      inset: 0 0 0 auto;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      z-index: 1;
+      background: var(--sg-bg);
+      // animácia vrstvy (translateX) nesmie vytvoriť scrollbary v main
+      overflow: hidden;
+
+      &.closed {
+        width: 0 !important;
+        overflow: hidden;
+      }
+    }
+
+    .sg-admin-theme-content {
+      width: 100%;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      // vlastný stacking context – sticky/z-index prvky stránky nepresvitnú cez drawer
+      z-index: 0;
+      overflow: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--sg-scrollbar) transparent;
+    }
+  }
+
+  .sg-admin-theme-footer {
+    width: 100%;
+    display: flex;
+    gap: 12px;
+    min-height: var(--sg-footer-height);
+    max-height: var(--sg-footer-height);
+    padding: 0 20px;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    font-size: 12px;
+    color: var(--sg-text-muted);
+    background: var(--sg-surface);
+    border-top: 1px solid var(--sg-border);
+  }
+}
+
+.mobile-only {
+  display: none !important;
+}
+
+.pc-only {
+  display: flex !important;
+}
+
+// ─── Mobil ─────────────────────────────────────────────────────────────────
+@media screen and (max-width: 800px) {
+  .mobile-only {
+    display: flex !important;
+  }
+
+  .pc-only {
+    display: none !important;
+  }
+
+  .sg-admin-theme {
+    height: auto;
+    width: 100%;
+
+    .sg-admin-theme-header {
+      position: sticky;
+      top: 0;
+      padding: 0 8px 0 4px;
+    }
+
+    .sg-admin-theme-sidebar {
+      width: 0;
+      height: 100%;
+      overflow: hidden;
+      z-index: 99999;
+      position: fixed;
+      display: flex;
+      transition: width 300ms cubic-bezier(0.2, 0, 0, 1);
+
+      &.open {
+        width: 100%;
+      }
+
+      .sg-admin-theme-sidebar-wrapper {
+        width: 100%;
+      }
+    }
+
+    .sg-admin-theme-body {
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    .sg-admin-theme-main {
+      overflow: visible;
+
+      .sg-admin-theme-drawer {
+        width: 100%;
+        position: fixed;
+        top: 0;
+        z-index: 10;
+      }
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-admin-theme * {
+    transition: none !important;
+  }
+}

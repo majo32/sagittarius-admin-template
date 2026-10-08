@@ -1,0 +1,85 @@
+:host {
+  display: contents;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.sg-admin-theme-drawer-wrapper {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  background: var(--sg-bg);
+  animation: sg-drawer-in 220ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.sg-admin-theme-drawer-header {
+  min-height: var(--sg-drawer-header-height);
+  max-height: var(--sg-drawer-header-height);
+  display: flex;
+  gap: 8px;
+  padding: 0 12px 0 6px;
+  align-items: center;
+  overflow: hidden;
+  background: var(--sg-surface);
+  border-bottom: 1px solid var(--sg-border);
+  position: relative;
+  z-index: 1;
+
+  .sg-admin-theme-drawer-close button,
+  .sg-admin-theme-drawer-full-page {
+    color: var(--sg-text-muted);
+  }
+
+  .sg-admin-theme-drawer-title {
+    flex-grow: 1;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--sg-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sg-admin-theme-drawer-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.sg-admin-theme-drawer-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sg-scrollbar) transparent;
+}
+
+@keyframes sg-drawer-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+// počas animácie otvárania skry scrollbar tela (inak na chvíľu preblikne)
+@media (prefers-reduced-motion: no-preference) {
+  .sg-admin-theme-drawer-wrapper.animating .sg-admin-theme-drawer-body {
+    overflow: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-admin-theme-drawer-wrapper {
+    animation: none;
+  }
+}

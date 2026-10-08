@@ -1,0 +1,50 @@
+{
+  "name": "sagittarius-admin-template",
+  "version": "0.2.0",
+  "description": "Angular admin layout: collapsible sidebar, header with user menu, stacked drawers, footer, design tokens (light/dark) and page CSS utilities. Built on Angular Material 3.",
+  "keywords": [
+    "angular",
+    "angular-material",
+    "admin",
+    "admin-template",
+    "dashboard",
+    "layout",
+    "sidebar",
+    "drawer",
+    "material3",
+    "dark-mode"
+  ],
+  "author": "Marian Spisiak",
+  "license": "MIT",
+  "homepage": "https://GITHUB_USER.github.io/sagittarius-admin-template/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GITHUB_USER/sagittarius-admin-template.git",
+    "directory": "projects/sagittarius-admin-template"
+  },
+  "bugs": {
+    "url": "https://github.com/GITHUB_USER/sagittarius-admin-template/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@angular/cdk": "^20.2.0",
+    "@angular/common": "^20.2.0",
+    "@angular/core": "^20.2.0",
+    "@angular/material": "^20.2.0",
+    "@angular/router": "^20.2.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "exports": {
+    "./styles/*": {
+      "sass": "./styles/*",
+      "default": "./styles/*"
+    }
+  },
+  "sideEffects": [
+    "*.scss"
+  ]
+}

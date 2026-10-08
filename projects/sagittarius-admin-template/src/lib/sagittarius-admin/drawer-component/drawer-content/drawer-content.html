@@ -1,0 +1,23 @@
+<div class="sg-admin-theme-drawer-wrapper" [class.animating]="animating()" (animationend)="onAnimationEnd($event)">
+  <div class="sg-admin-theme-drawer-header">
+    <div class="sg-admin-theme-drawer-close">
+      <button matIconButton (click)="close()" [attr.aria-label]="pos() ? 'Späť' : 'Zavrieť'">
+        <mat-icon>{{ pos() ? 'arrow_back' : 'close' }}</mat-icon>
+      </button>
+    </div>
+    <div class="sg-admin-theme-drawer-title">{{ drawerRef().title() }}</div>
+    <div class="sg-admin-theme-drawer-actions">
+      @if (drawerRef().fullPageUrl(); as url) {
+        <!-- routerLink = imperatívna navigácia -> DrawerComponent zavrie všetky vrstvy;
+             replaceUrl nahradí záznam histórie drawera, takže Späť vedie na pôvodnú stránku -->
+        <a matIconButton class="sg-admin-theme-drawer-full-page" [routerLink]="url" [replaceUrl]="true"
+           [matTooltip]="fullPageLabel()" [attr.aria-label]="fullPageLabel()">
+          <mat-icon>{{ fullPageIcon() }}</mat-icon>
+        </a>
+      }
+    </div>
+  </div>
+  <div class="sg-admin-theme-drawer-body">
+    <ng-template #vc></ng-template>
+  </div>
+</div>
