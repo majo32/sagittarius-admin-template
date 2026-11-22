@@ -480,7 +480,7 @@
       display: flex;
       flex-direction: column;
       z-index: 1;
-      background: var(--sg-bg);
+      // bez vlastného pozadia – vrstvy ho majú samé, takže pri odchode poslednej vrstvy presvitá obsah
       // animácia vrstvy (translateX) nesmie vytvoriť scrollbary v main
       overflow: hidden;
 

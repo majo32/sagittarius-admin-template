@@ -1,4 +1,4 @@
-<div class="sg-admin-theme-drawer-wrapper" [class.animating]="animating()" (animationend)="onAnimationEnd($event)">
+<div class="sg-admin-theme-drawer-wrapper" [class.animating]="animating()" [class.leaving]="leaving()" [attr.inert]="leaving() ? '' : null" (animationend)="onAnimationEnd($event)">
   <div class="sg-admin-theme-drawer-header">
     <div class="sg-admin-theme-drawer-close">
       <button matIconButton (click)="close()" [attr.aria-label]="pos() ? labels.drawerBack : labels.drawerClose">

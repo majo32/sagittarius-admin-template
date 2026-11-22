@@ -1,6 +1,6 @@
 {
   "name": "sagittarius-admin-template",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Angular admin layout: collapsible sidebar, header with user menu, stacked drawers, footer, design tokens (light/dark) and page CSS utilities. Built on Angular Material 3.",
   "keywords": [
     "angular",

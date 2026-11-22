@@ -29,6 +29,9 @@ export class DrawerContent {
   readonly fullPageLabelInput = input<string | undefined>(undefined, { alias: 'fullPageLabel' });
   readonly fullPageLabel = computed(() => this.fullPageLabelInput() ?? this.labels.drawerFullPage);
   readonly animating = signal(true);
+  /** Vrstva práve odchádza (animácia zatvárania). */
+  readonly leaving = signal(false);
+  private leaveDone?: () => void;
 
   loadComponent<T>(component: Type<T>, injector: Injector): ComponentRef<T> {
     this.vc.clear();
@@ -39,7 +42,23 @@ export class DrawerContent {
     // animationend bubble-uje aj z obsahu – reaguj len na vlastnú animáciu
     if (event.target === event.currentTarget) {
       this.animating.set(false);
+      if (this.leaving()) {
+        this.leaveDone?.();
+      }
     }
+  }
+
+  /** Spustí animáciu odchodu; promise sa splní po jej skončení (pri reduced motion hneď). */
+  leave(): Promise<void> {
+    if (typeof window === 'undefined' || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      return Promise.resolve();
+    }
+    this.leaving.set(true);
+    return new Promise(resolve => {
+      this.leaveDone = resolve;
+      // poistka, ak animationend nepríde (napr. skrytý tab)
+      setTimeout(resolve, 300);
+    });
   }
 
   close() {

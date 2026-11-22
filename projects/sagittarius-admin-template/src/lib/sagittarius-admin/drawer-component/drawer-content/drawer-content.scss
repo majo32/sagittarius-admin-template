@@ -71,15 +71,33 @@
   }
 }
 
-// počas animácie otvárania skry scrollbar tela (inak na chvíľu preblikne)
+@keyframes sg-drawer-out {
+  from {
+    transform: none;
+    opacity: 1;
+  }
+  to {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+}
+
+.sg-admin-theme-drawer-wrapper.leaving {
+  pointer-events: none;
+  animation: sg-drawer-out 180ms cubic-bezier(0.3, 0, 1, 1) forwards;
+}
+
+// počas animácie otvárania/zatvárania skry scrollbar tela (inak na chvíľu preblikne)
 @media (prefers-reduced-motion: no-preference) {
-  .sg-admin-theme-drawer-wrapper.animating .sg-admin-theme-drawer-body {
+  .sg-admin-theme-drawer-wrapper.animating .sg-admin-theme-drawer-body,
+  .sg-admin-theme-drawer-wrapper.leaving .sg-admin-theme-drawer-body {
     overflow: hidden;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sg-admin-theme-drawer-wrapper {
+  .sg-admin-theme-drawer-wrapper,
+  .sg-admin-theme-drawer-wrapper.leaving {
     animation: none;
   }
 }

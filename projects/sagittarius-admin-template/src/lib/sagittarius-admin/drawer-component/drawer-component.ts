@@ -25,6 +25,8 @@ export class DrawerComponent {
   private readonly drawerService = inject(DrawerService);
   private readonly injector = inject(Injector);
   private readonly layers: DrawerLayer[] = [];
+  /** Vrstvy, ktoré práve dobiehajú animáciu odchodu. */
+  private readonly leaving = new Set<ComponentRef<DrawerContent>>();
 
   constructor() {
     const location = inject(PlatformLocation);
@@ -42,6 +44,7 @@ export class DrawerComponent {
       unlisten();
       sub?.unsubscribe();
       this.layers.forEach(l => l.wrapper.destroy());
+      this.leaving.forEach(w => w.destroy());
     });
   }
 
@@ -50,14 +53,26 @@ export class DrawerComponent {
     if (!layer) {
       return;
     }
-    layer.wrapper.destroy();
-    if (!this.layers.length) {
-      this.drawerService.close();
-    }
+    const wrapper = layer.wrapper;
+    this.leaving.add(wrapper);
+    wrapper.instance.leave().then(() => {
+      if (!this.leaving.delete(wrapper)) {
+        return; // už zničená cez closeAll / destroy
+      }
+      wrapper.destroy();
+      // medzitým mohla byť otvorená nová vrstva – vtedy drawer nezatváraj
+      if (!this.layers.length) {
+        this.drawerService.close();
+      }
+    });
   }
 
   closeAll() {
-    if (!this.layers.length) {
+    // navigácia na inú stránku – vrstvy zmiznú hneď, aj tie, čo práve odchádzajú
+    const hadLeaving = this.leaving.size > 0;
+    this.leaving.forEach(w => w.destroy());
+    this.leaving.clear();
+    if (!this.layers.length && !hadLeaving) {
       return;
     }
     while (this.layers.length) {

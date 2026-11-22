@@ -3,6 +3,11 @@
 All notable changes to `sagittarius-admin-template` are documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 0.2.1
+
+- Drawer: closing a layer (back arrow, ×, browser Back, `DrawerRef.close()`) now plays a short exit animation instead of disappearing instantly; respects `prefers-reduced-motion`. Navigation via the menu still closes all layers immediately.
+- `.sg-admin-theme-drawer` no longer has its own background (each layer has one), so the page content shows through while the last layer leaves.
+
 ## 0.2.0
 
 First public release on npmjs.com.
